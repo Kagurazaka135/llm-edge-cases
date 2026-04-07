@@ -61,3 +61,4 @@ However, all cases described are reproducible.
 Author
 
 Personal experiments while exploring LLM boundaries.
+我突然想到个难绷的东西，占卜讲究问的事最好具体到某件事，并且不要反复算，llm讲究的是问题具体到先怎么怎么，后怎么怎么，以及不要反复重复用🤦
