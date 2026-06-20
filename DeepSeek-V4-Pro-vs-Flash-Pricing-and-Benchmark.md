@@ -56,6 +56,27 @@ Method: Same question tested across Pro/Flash x thinking enabled/disabled = 4 co
 Cost calculated on output tokens only (input ~60-90 tokens, negligible cost).
 Pro output: ¥6/M. Flash output: ¥2/M.
 
+### Test Questions
+
+**Q0: Pirate Game Theory**
+> 5 pirates split 100 gold coins. They propose in order from highest to lowest rank. A proposal passes if at least half (including the proposer) agree. Otherwise the proposer is thrown overboard and the next pirate proposes. All pirates are perfectly rational. Preferences: survival > more gold > fewer deaths. What should Pirate #1 propose?
+
+**Q1: Three Gods Problem (Boolos simplified)**
+> Three gods: Truth, False, Random. You may ask three yes/no questions, each to one god only. Design a strategy to identify all three gods through these three questions.
+
+**Q2: Counter-Intuitive Probability Trap**
+> Problem 1: I flip three coins and tell you "at least two are heads." What's the probability all three are heads?
+> Problem 2: I flip three coins and tell you "the first and second are heads." What's the probability all three are heads?
+> Calculate both answers separately — note the conditions are different.
+
+**Q3: Self-Referential Liar Paradox**
+> 10 people each make a statement. Person 1: "Exactly 1 of us is a liar." Person 2: "Exactly 2 of us are liars." ... Person 10: "Exactly 10 of us are liars." Each person either always tells the truth or always lies. It's not guaranteed that both truth-tellers and liars exist (could be all liars or all truth-tellers). How many liars are there?
+
+**Q4: Candy Game Theory (original, no searchable answer)**
+> Three kids A, B, C split 20 candies. Rules: A proposes first, then B votes. If B agrees, C automatically complies. If B disagrees, B proposes and C votes. If C agrees, B's proposal stands. If C disagrees, C proposes but can't vote for themselves — teacher D randomly accepts or rejects with 50/50 probability. If D rejects, nobody gets candy. Everyone knows all rules. Preferences: more candy > not getting scolded (survival) > fewer deaths. What is A's optimal proposal?
+
+---
+
 **Q1: Three Gods Problem (nested logic, largest gap)**
 
 ```
@@ -141,21 +162,7 @@ Pro without thinking gave the wrong answer (said "1-9 all valid"). Flash got it 
 
 ---
 
-## 6. Competitor Pricing Reference
-
-```
-              Output (per M tokens)    How much cheaper V4-Pro is
-GPT-5.5       $30.00                   34.5x
-Opus 4.7      $25.00                   28.7x
-Sonnet 4.6    $15.00                   17.2x
-Gemini 3.1    $12.00                   13.8x
-V4-Pro         $0.87                    1x
-V4-Flash       $0.28                    -
-```
-
----
-
-## 7. Optimization Recommendations
+## 6. Optimization Recommendations
 
 1. Lock System Prompt — separate static role definitions from dynamic variables
 2. Deterministic tool ordering — ensure serialization consistency
@@ -225,6 +232,25 @@ SimpleQA 事实准确度       57.9        34.1        （差 23.8 分）
 测试方法：同一道题分别用 Pro/Flash × 开思考/关思考 四种组合调用 API
 定价按输出计算（输入均为 60-90 tokens，费用可忽略）
 Pro 输出 ¥6/M，Flash 输出 ¥2/M
+
+### 测试题目
+
+**题0：海盗分金币博弈**
+> 有5个海盗分100枚金币，按照等级从高到低依次提出方案。如果方案获得至少一半海盗同意（包括提出者），则通过。否则提出者被扔进大海，下一个海盗继续。假设每个海盗都是完美理性的，且优先保命>多拿金币>少死人。1号海盗应该怎么分配？请详细推理。
+
+**题1：三神问题（Boolos精简版）**
+> 三个神：真话神、假话神、随机神。你可以问三个是/否问题，每个问题只能问一个神。请设计一个策略，通过这三个问题确定每个神的身份。请详细推理每一步。
+
+**题2：反直觉概率陷阱**
+> 两个概率问题，请分别作答：问题一：我抛三枚硬币，告诉你至少有两枚是正面。问三枚都是正面的概率是多少？问题二：我抛三枚硬币，告诉你第一枚和第二枚是正面。问三枚都是正面的概率是多少？请分别计算两个问题的答案，注意它们的条件不同。
+
+**题3：自指悖论变体**
+> 10个人，每人说一句话。1号说：我们中间恰好有1个撒谎者。2号说：我们中间恰好有2个撒谎者。以此类推，10号说：我们中间恰好有10个撒谎者。每个人要么永远说真话要么永远撒谎，但不保证说真话的人和撒谎的人同时存在（可能全是撒谎者或全是说真话的人）。问有多少个撒谎者？请详细推理，特别注意检查是否存在自相矛盾的情况。
+
+**题4：糖果分配博弈（原创变体，搜不到答案）**
+> 三个小孩A、B、C分20颗糖。规则：A先提案（比如我8你6他6），然后B投票。如果B同意，C自动服从，按提案分。如果B不同意，就轮到B提案，C投票。如果C同意就按B的提案分，不同意就轮到C提案但C不能投自己的票——D（老师）会随机同意或拒绝，概率各50%。如果D拒绝，所有人都不拿糖。每个人都知道全部规则，偏好：多拿糖>不被老师骂（活下去）>少死人。A的最优提案是什么？请用逆向归纳法详细推理。
+
+---
 
 **题1 三神问题（嵌套逻辑，差距最大）**
 
@@ -318,21 +344,7 @@ Pro关思考翻车（答1-9都行），Flash两种模式都答对了。
 
 ---
 
-## 六、竞品对比参考
-
-```
-            输出价（每百万token）   V4-Pro 便宜倍数
-GPT-5.5      $30.00                34.5x
-Opus 4.7     $25.00                28.7x
-Sonnet 4.6   $15.00                17.2x
-Gemini 3.1   $12.00                13.8x
-V4-Pro        $0.87                 1x
-V4-Flash      $0.28                  -
-```
-
----
-
-## 七、优化建议
+## 六、优化建议
 
 1. 固化 System Prompt — 静态角色定义与动态变量分离
 2. 工具定义做确定性排序 — 保证每次序列化一致
