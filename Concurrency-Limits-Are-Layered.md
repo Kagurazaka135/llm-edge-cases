@@ -12,7 +12,7 @@ These are informal notes, matching the tone of the rest of this repo. Every numb
 
 ## Phenomena
 
-1. **Same model, different client, different ceiling.** A GLM-based coding CLI refused to start more than **2 sub-agents** at once (`user concurrency limit exceeded`), while the same kind of fan-out in a different CLI ran **8+** without complaint. The model was similar; the harness was not.
+1. **Same model, different client, different ceiling.** Across four coding harnesses measured on the same machine, the *client layer alone* gave: sub-agents capped at **2** (one CLI, hard-refused); **0 in a non-git directory but ≥10 in a git one** (another); **8 background / 10 foreground** (a third); and **no sub-agent interface at all** (a fourth, which instead accepted 80 parallel tool calls). Same models underneath. The harness *is* the ceiling — and it is a different shape in each one.
 
 2. **Same client, different model, different ceiling.** Two providers behind the same local gateway: one showed no visible cap (300 concurrent all returned), another started returning `429` at roughly **100** in-flight. Same code path, same machine.
 
@@ -22,7 +22,7 @@ These are informal notes, matching the tone of the rest of this repo. Every numb
 
 5. **The error code names the wrong layer.** A `429` can mean *your* account hit its per-minute cap, **or** the *upstream provider* is out of capacity. Identical status code, completely different fix. Reading only the code — and not the error body — sends you to the wrong layer.
 
-1. **同一个模型，换个客户端，上限就变。** 一个基于 GLM 的编程 CLI，同时最多只肯起 **2 个子代理**（报 `user concurrency limit exceeded`）；而另一类 CLI 里同样性质的扇出，跑到 **8 个以上**都没吭声。模型差不多，外壳不一样。
+1. **同一个模型，换个客户端，上限就变。** 在**同一台机器**上测四款编程外壳，**光客户端这一层**就给出：子代理卡 **2 个**（某 CLI，硬拒）；**非 git 目录 0 个、git 目录 ≥10 个**（另一款）；**后台 8 / 前台 10**（第三款）；还有一款**压根没有子代理接口**（但它接受 80 个并行工具调用）。底下模型差不多。**外壳本身就是那堵墙，而且每一款墙的形状都不一样。**
 
 2. **同一个客户端，换个模型，上限又变。** 同一个本地网关后面挂了两个上游：一个看不出闸（300 并发全过），另一个在途大概到 **100** 就开始回 `429`。同一套代码，同一台机器。
 
@@ -113,6 +113,38 @@ Two hygiene rules that make the difference between data and noise:
 
 ---
 
+## Cross-Harness: the client layer, measured four ways
+
+Four coding harnesses, same machine, same couple of days. Every number below is a **client-layer** property. The models underneath differed, but re-testing with different drivers only moved numbers where a note says so.
+
+| Harness | foreground tool calls | background | sub-agents | other |
+|---|---|---|---|---|
+| A (coding CLI) | **serialized** — a batch of 6 ran strictly one after another | unbounded, but dispatched ≈10/s | **2**, hard-refused (`user concurrency limit exceeded`) | — |
+| B (agent CLI) | runs in parallel | — | **0 in a non-git cwd**; **≥10 in a git one** (20 launched → 9 + 10, ~5 min apart) | writable sub-agents need a git worktree |
+| C (another CLI) | **truly parallel** (6/6 and 16/16 fully overlapped) | — | none exposed | accepted **80** parallel calls; real peak overlap only **27** |
+| D (agent framework) | **serialized** — *by design*: shell tools don't declare themselves concurrency-safe | **hard cap 10 per owner** | **8** (background type, hard-refused) / **10** (foreground pool) | workflow fan-out = `min(16, cores − 2)` = **14** |
+
+Three things this table makes visible:
+
+- **"Does foreground parallelize?" splits the field.** C is fully parallel. D is serialized *on purpose* — shell commands have side effects, so they are barred from the pool. A is serialized with no stated reason. Whether the serialization is *a design decision* or *an accident* is invisible from the outside — which is precisely why the bare number tells you nothing.
+- **"10" keeps appearing.** D's tool pool = 10, D's background cap = 10, A's dispatch rate ≈ 10/s. Round, human-chosen defaults — not physics.
+- **Check whether the cap is configurable.** D exposes every limit as a setting (some via a UI card); the `8` is a *default*, not a wall. A hard-coded 2-cap is a fundamentally different obstacle from an 8-cap you can raise.
+
+| 外壳 | 前台工具调用 | 后台 | 子代理 | 其他 |
+|---|---|---|---|---|
+| A（编程 CLI） | **串行**——一批 6 个严格一个接一个 | 近无限，但派发 ≈10/s | **2**，硬拒（`user concurrency limit exceeded`） | — |
+| B（agent CLI） | 并行 | — | **非 git 目录 0 个**；**git 目录 ≥10 个**（派 20 个 → 9+10，隔 ~5 分钟） | 可写子代理需要 git worktree |
+| C（另一 CLI） | **真并行**（6/6、16/16 全重叠） | — | 无此接口 | 接受 **80** 个并行调用；实际峰值重叠仅 **27** |
+| D（agent 框架） | **串行**——**设计如此**：shell 工具不自称并发安全 | **每 owner 硬顶 10** | **8**（后台型，硬拒）/ **10**（前台池） | workflow 扇出 = `min(16, 核数−2)` = **14** |
+
+这张表让三件事变得可见：
+
+- **"前台到底并行吗"把四家劈开。** C 完全并行；D 是**故意**串行——shell 命令有副作用，所以被挡在并发池外；A 串行但没给理由。串行究竟是**设计决定**还是**意外遗留**，从外面看不出来——这正是"光一个数字没用"的原因。
+- **"10" 反复出现。** D 的工具池 = 10、D 的后台顶 = 10、A 的派发率 ≈ 10/s。圆整的、人为挑的默认值——不是物理。
+- **看这个上限能不能配。** D 把所有上限都暴露成设置项（有的还有 UI 卡片）；那个 `8` 是**默认值**，不是墙。一个**硬编码**的 2 上限，和一个**你能调高**的 8 上限，是完全不同性质的障碍。
+
+---
+
 ## Potential Causes
 
 - **Layers 1–2 exist for cost and fairness.** A coding agent's sub-agent slots are there because each agent burns context and tokens; the vendor gates concurrency to keep one user from eating the plan. That is a *policy* number, not a physics number.
@@ -139,12 +171,16 @@ Two hygiene rules that make the difference between data and noise:
 
 6. **Make the number reproducible.** Ship the probe (timestamp + sleep + overlap math) with the claim, so anyone — including future you — can re-run it on their own machine. Numbers without a reproduction method are folklore.
 
+7. **Ask whether the cap is configurable before designing around it.** A limit exposed in settings (even behind a UI card) is a default you can raise; a hard-coded one is a wall. Design for walls, tune for defaults.
+
 1. **报并发数必须带口径。** 一个能用的结论要写清：**哪一层**、**哪个模型/provider**、**真钥匙还是假钥匙**、**套接字状态**、**哪天测的**。光一句“300 并发”不是信息。
 2. **二分到崩，然后给层命名。** 别停在“失败了”。失败形状（被拒 / 账号 429 / provider 429 / 超时）本身就是全部答案。
 3. **按**最窄**的那一层设计编排。** 如果客户端子代理上限是 2，那 10 路扇出的设计就是幻想，跟模型多强无关。按路径上最窄的闸来设计。
 4. **别靠加 key 去解共享池的上限。** 429 来自第 3 层的话，加 key 没用——闸在你上游。应该换 provider 或换模型。
 5. **把“免费档”当成绑定客户端、且随时会变的东西。** 免费档可以绑特定客户端、走共享池、还有可能被悄悄收紧的每日计数。别把撑得住业务的自动化建在上面。
 6. **让数字可复现。** 把探针（时间戳+睡眠+重叠计算）和结论一起发出来，任何人（包括未来的你）都能在自己机器上重跑。没有复现方法的数字就是民间传说。
+
+7. **在围着上限做设计之前，先问它能不能配。** 暴露在设置里的上限（哪怕藏在 UI 卡片后面）是**默认值**，你能调高；硬编码的才是**墙**。**照墙设计，拿默认值调优。**
 
 ---
 
