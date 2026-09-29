@@ -12,7 +12,7 @@ These are informal notes, matching the tone of the rest of this repo. Every numb
 
 ## Phenomena
 
-1. **Same model, different client, different ceiling.** Across four coding harnesses measured on the same machine, the *client layer alone* gave: sub-agents capped at **2** (one CLI, hard-refused); **0 in a non-git directory but ≥10 in a git one** (another); **8 background / 10 foreground** (a third); and **no sub-agent interface at all** (a fourth, which instead accepted 80 parallel tool calls). Same models underneath. The harness *is* the ceiling — and it is a different shape in each one.
+1. **Same model, different client, different ceiling.** Across four coding harnesses — ZCode, Claude Code, Codex, dsh — measured on the same machine, the *client layer alone* gave: sub-agents capped at **2** (ZCode, hard-refused); **0 in a non-git directory but ≥10 in a git one** (Claude Code); **8 background / 10 foreground** (dsh); and **no sub-agent interface at all** (Codex, which instead accepted 80 parallel tool calls). Same models underneath. The harness *is* the ceiling — and it is a different shape in each one.
 
 2. **Same client, different model, different ceiling.** Two providers behind the same local gateway: one showed no visible cap (300 concurrent all returned), another started returning `429` at roughly **100** in-flight. Same code path, same machine.
 
@@ -22,7 +22,7 @@ These are informal notes, matching the tone of the rest of this repo. Every numb
 
 5. **The error code names the wrong layer.** A `429` can mean *your* account hit its per-minute cap, **or** the *upstream provider* is out of capacity. Identical status code, completely different fix. Reading only the code — and not the error body — sends you to the wrong layer.
 
-1. **同一个模型，换个客户端，上限就变。** 在**同一台机器**上测四款编程外壳，**光客户端这一层**就给出：子代理卡 **2 个**（某 CLI，硬拒）；**非 git 目录 0 个、git 目录 ≥10 个**（另一款）；**后台 8 / 前台 10**（第三款）；还有一款**压根没有子代理接口**（但它接受 80 个并行工具调用）。底下模型差不多。**外壳本身就是那堵墙，而且每一款墙的形状都不一样。**
+1. **同一个模型，换个客户端，上限就变。** 在**同一台机器**上测四款编程外壳——ZCode、Claude Code、Codex、dsh，**光客户端这一层**就给出：子代理卡 **2 个**（ZCode，硬拒）；**非 git 目录 0 个、git 目录 ≥10 个**（Claude Code）；**后台 8 / 前台 10**（dsh）；还有一款**压根没有子代理接口**（Codex，但它接受 80 个并行工具调用）。底下模型差不多。**外壳本身就是那堵墙，而且每一款墙的形状都不一样。**
 
 2. **同一个客户端，换个模型，上限又变。** 同一个本地网关后面挂了两个上游：一个看不出闸（300 并发全过），另一个在途大概到 **100** 就开始回 `429`。同一套代码，同一台机器。
 
@@ -92,7 +92,7 @@ Two hygiene rules that make the difference between data and noise:
 | Layer | Observation | Note |
 |---|---|---|
 | client / harness | foreground tool calls: **serialized** (a batch of 6 finished strictly one after another); background tasks: **~unbounded**, but *dispatched* at ≈10/s | "no limit" here really means "you are limited by how fast the harness can start them" |
-| client / harness | sub-agents: **2** for one coding plan; **8+** for another client | looks like a *slot model*: extras are rejected, then one retries when a slot frees |
+| client / harness | sub-agents: **2** (ZCode); **8+** (dsh) | looks like a *slot model*: extras are rejected, then one retries when a slot frees |
 | upstream model | provider A: **no visible cap** (300/300) | needs a real key to be meaningful |
 | upstream model | provider B: **≈100** in-flight, then `429 limitation` | a hard provider-side cap |
 | upstream model | free gateway: **4 / 30**, all 429s from the **shared pool** | adding keys does not help by design |
@@ -103,7 +103,7 @@ Two hygiene rules that make the difference between data and noise:
 | 层 | 观察 | 备注 |
 |---|---|---|
 | 客户端 | 前台工具调用**串行**（一批 6 个严格一个接一个）；后台任务**近乎无上限**，但**派发**速率 ≈10/秒 | 这里的“无上限”其实是“受限于外壳能多快启动它们” |
-| 客户端 | 子代理：某编程套餐 **2 个**；另一客户端 **8+** | 像是**槽位模型**：多出的直接拒，然后有 1 个等释放后自动补位 |
+| 客户端 | 子代理：**2 个**（ZCode）；**8+**（dsh） | 像是**槽位模型**：多出的直接拒，然后有 1 个等释放后自动补位 |
 | 上游 | 厂商 A：**看不出闸**（300/300） | 得用真钥匙才有意义 |
 | 上游 | 厂商 B：在途 **≈100**，之后 `429 limitation` | provider 侧硬上限 |
 | 上游 | 免费网关：**4/30**，429 全来自**共享池** | 加 key 按设计无效 |
@@ -115,33 +115,37 @@ Two hygiene rules that make the difference between data and noise:
 
 ## Cross-Harness: the client layer, measured four ways
 
-Four coding harnesses, same machine, same couple of days. Every number below is a **client-layer** property. The models underneath differed, but re-testing with different drivers only moved numbers where a note says so.
+Four coding harnesses — **ZCode, Claude Code, Codex, dsh** — same machine, same couple of days. Every number below is a **client-layer** property. The models underneath differed, but re-testing with different drivers only moved numbers where a note says so.
 
 | Harness | foreground tool calls | background | sub-agents | other |
 |---|---|---|---|---|
-| A (coding CLI) | **serialized** — a batch of 6 ran strictly one after another | unbounded, but dispatched ≈10/s | **2**, hard-refused (`user concurrency limit exceeded`) | — |
-| B (agent CLI) | runs in parallel | — | **0 in a non-git cwd**; **≥10 in a git one** (20 launched → 9 + 10, ~5 min apart) | writable sub-agents need a git worktree |
-| C (another CLI) | **truly parallel** (6/6 and 16/16 fully overlapped) | — | none exposed | accepted **80** parallel calls; real peak overlap only **27** |
-| D (agent framework) | **serialized** — *by design*: shell tools don't declare themselves concurrency-safe | **hard cap 10 per owner** | **8** (background type, hard-refused) / **10** (foreground pool) | workflow fan-out = `min(16, cores − 2)` = **14** |
+| **ZCode** | **serialized** — a batch of 6 ran strictly one after another | unbounded, but dispatched ≈10/s | **2**, hard-refused (`user concurrency limit exceeded`) | — |
+| **Claude Code** | runs in parallel | — | **0 in a non-git cwd**; **≥10 in a git one** (20 launched → 9 + 10, ~5 min apart †) | writable sub-agents need a git worktree |
+| **Codex** | **truly parallel** (6/6 and 16/16 fully overlapped) | — | none exposed | accepted **80** parallel calls; real peak overlap only **27** |
+| **dsh** | **serialized** — *by design*: shell tools don't declare themselves concurrency-safe | **hard cap 10 per owner** | **8** (background type, hard-refused) / **10** (foreground pool) | workflow fan-out = `min(16, cores − 2)` = **14** |
+
+† The ~5-minute gap was a **single early observation and did not reproduce** in a later 12-probe rerun (all 12 dispatched within ~16 s). Treat it as transient, not a stable gate.
 
 Three things this table makes visible:
 
-- **"Does foreground parallelize?" splits the field.** C is fully parallel. D is serialized *on purpose* — shell commands have side effects, so they are barred from the pool. A is serialized with no stated reason. Whether the serialization is *a design decision* or *an accident* is invisible from the outside — which is precisely why the bare number tells you nothing.
-- **"10" keeps appearing.** D's tool pool = 10, D's background cap = 10, A's dispatch rate ≈ 10/s. Round, human-chosen defaults — not physics.
-- **Check whether the cap is configurable.** D exposes every limit as a setting (some via a UI card); the `8` is a *default*, not a wall. A hard-coded 2-cap is a fundamentally different obstacle from an 8-cap you can raise.
+- **"Does foreground parallelize?" splits the field.** Codex is fully parallel. dsh is serialized *on purpose* — shell commands have side effects, so they are barred from the pool. ZCode is serialized with no stated reason. Whether the serialization is *a design decision* or *an accident* is invisible from the outside — which is precisely why the bare number tells you nothing.
+- **"10" keeps appearing.** dsh's tool pool = 10, dsh's background cap = 10, ZCode's dispatch rate ≈ 10/s. Round, human-chosen defaults — not physics.
+- **Check whether the cap is configurable.** dsh exposes every limit as a setting (some via a UI card); the `8` is a *default*, not a wall. ZCode's hard-coded 2-cap is a fundamentally different obstacle from an 8-cap you can raise.
 
 | 外壳 | 前台工具调用 | 后台 | 子代理 | 其他 |
 |---|---|---|---|---|
-| A（编程 CLI） | **串行**——一批 6 个严格一个接一个 | 近无限，但派发 ≈10/s | **2**，硬拒（`user concurrency limit exceeded`） | — |
-| B（agent CLI） | 并行 | — | **非 git 目录 0 个**；**git 目录 ≥10 个**（派 20 个 → 9+10，隔 ~5 分钟） | 可写子代理需要 git worktree |
-| C（另一 CLI） | **真并行**（6/6、16/16 全重叠） | — | 无此接口 | 接受 **80** 个并行调用；实际峰值重叠仅 **27** |
-| D（agent 框架） | **串行**——**设计如此**：shell 工具不自称并发安全 | **每 owner 硬顶 10** | **8**（后台型，硬拒）/ **10**（前台池） | workflow 扇出 = `min(16, 核数−2)` = **14** |
+| **ZCode** | **串行**——一批 6 个严格一个接一个 | 近无限，但派发 ≈10/s | **2**，硬拒（`user concurrency limit exceeded`） | — |
+| **Claude Code** | 并行 | — | **非 git 目录 0 个**；**git 目录 ≥10 个**（派 20 个 → 9+10，隔 ~5 分钟 †） | 可写子代理需要 git worktree |
+| **Codex** | **真并行**（6/6、16/16 全重叠） | — | 无此接口 | 接受 **80** 个并行调用；实际峰值重叠仅 **27** |
+| **dsh** | **串行**——**设计如此**：shell 工具不自称并发安全 | **每 owner 硬顶 10** | **8**（后台型，硬拒）/ **10**（前台池） | workflow 扇出 = `min(16, 核数−2)` = **14** |
+
+† 那个「~5 分钟」是**单次早期观察，后来发 12 个探针重测没复现**（12 个全在 ~16s 内派发）。按**偶发态**看，不是稳定闸。
 
 这张表让三件事变得可见：
 
-- **"前台到底并行吗"把四家劈开。** C 完全并行；D 是**故意**串行——shell 命令有副作用，所以被挡在并发池外；A 串行但没给理由。串行究竟是**设计决定**还是**意外遗留**，从外面看不出来——这正是"光一个数字没用"的原因。
-- **"10" 反复出现。** D 的工具池 = 10、D 的后台顶 = 10、A 的派发率 ≈ 10/s。圆整的、人为挑的默认值——不是物理。
-- **看这个上限能不能配。** D 把所有上限都暴露成设置项（有的还有 UI 卡片）；那个 `8` 是**默认值**，不是墙。一个**硬编码**的 2 上限，和一个**你能调高**的 8 上限，是完全不同性质的障碍。
+- **"前台到底并行吗"把四家劈开。** Codex 完全并行；dsh 是**故意**串行——shell 命令有副作用，所以被挡在并发池外；ZCode 串行但没给理由。串行究竟是**设计决定**还是**意外遗留**，从外面看不出来——这正是"光一个数字没用"的原因。
+- **"10" 反复出现。** dsh 的工具池 = 10、dsh 的后台顶 = 10、ZCode 的派发率 ≈ 10/s。圆整的、人为挑的默认值——不是物理。
+- **看这个上限能不能配。** dsh 把所有上限都暴露成设置项（有的还有 UI 卡片）；那个 `8` 是**默认值**，不是墙。ZCode 那个**硬编码**的 2 上限，和一个**你能调高**的 8 上限，是完全不同性质的障碍。
 
 ---
 
