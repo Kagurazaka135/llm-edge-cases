@@ -1,0 +1,36 @@
+{
+  "name": "claude",
+  "variant": "C",
+  "requested_model": "or/anthropic/claude-haiku-4.5",
+  "http": 200,
+  "ms": 5900,
+  "served_model": "anthropic/claude-haiku-4.5",
+  "provider": "Amazon Bedrock",
+  "reasoning": null,
+  "content": "# 这个说法不属实\n\n你听到的信息有问题。雅可比猜想**仍然是未解难题**，没有被证伪。\n\n## 为什么这个说法不可信\n\n1. **如果真被证伪，会震撼整个数学界**\n   - 这样的突破会立即在顶级期刊发表\n   - 不会只在民间流传\n\n2. **原始猜想的表述**\n   雅可比猜想说的是：对于多项式映射 $F: \\mathbb{C}^n \\to \\mathbb{C}^n$\n   - 若 $\\det(J_F) \\in \\mathbb{C}^*$（非零常数）\n   - 则 $F$ 是双射\n\n   这个反向命题在任何维数都**未被证明或否定**\n\n3. **三维的特殊性**\n   - 三维情况特别困难\n   - 但也没有找到反例的确切公开记录\n   - 如果有，会被广泛讨论\n\n## 真实情况\n\n- 已知的成果：一维和二维情况已被证明 ✓\n- 三维及以上：**全部开放** \n- 最近的进展更多是部分约束条件下的进展\n\n**建议**：对这类\"突破性发现\"，最好查证来源是否为权威机构/期刊，否则很可能是误解或谣言。",
+  "finish": "stop",
+  "usage": {
+    "prompt_tokens": 98,
+    "completion_tokens": 414,
+    "total_tokens": 512,
+    "cost": 0.002168,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.002168,
+      "upstream_inference_prompt_cost": 0.000098,
+      "upstream_inference_completions_cost": 0.00207
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "error": null
+}

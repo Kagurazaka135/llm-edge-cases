@@ -1,0 +1,36 @@
+{
+  "name": "gpt",
+  "variant": "C",
+  "requested_model": "or/openai/gpt-4o-mini",
+  "http": 200,
+  "ms": 5703,
+  "served_model": "openai/gpt-4o-mini",
+  "provider": "Azure",
+  "reasoning": null,
+  "content": "雅可比猜想是一个在数学上非常重要且久未解决的问题，它涉及到多元复变函数的映射性质。猜想的主要内容是，如果一个映射的雅可比行列式在某个区域内是常数，并且这个常数不为零，那么该映射在该区域内应该是单射的（即一一对应）。\n\n关于你提到的三维反例，目前在我的知识范围内（截至2023年10月），雅可比猜想的反例尚未被正式宣布或者得到广泛认可。如果有人声称找到了这样的反例，建议你查阅有关的数学论文或相关的权威消息来源，看看这一声称是否得到了数学界的广泛认可。\n\n雅可比猜想确实是一个困扰数学家多年的问题，虽然有许多数学家为这个问题贡献了大量的工作，但到目前为止，还没有找到一个被广泛接受的反例或证明。因此，对于任何新的声称必须以严谨的数学证明作为支持，并经过同行评审来确认其正确性。希望你能找到更多的信息来跟进这个问题。",
+  "finish": "stop",
+  "usage": {
+    "prompt_tokens": 72,
+    "completion_tokens": 250,
+    "total_tokens": 322,
+    "cost": 0.0001608,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.0001608,
+      "upstream_inference_prompt_cost": 0.0000108,
+      "upstream_inference_completions_cost": 0.00015
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "error": null
+}

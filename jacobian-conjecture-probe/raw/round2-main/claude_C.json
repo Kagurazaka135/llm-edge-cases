@@ -1,0 +1,36 @@
+{
+  "name": "claude",
+  "variant": "C",
+  "requested_model": "or/anthropic/claude-opus-4.6",
+  "http": 200,
+  "ms": 18058,
+  "served_model": "anthropic/claude-opus-4.6",
+  "provider": "Claude Platform on AWS",
+  "reasoning": null,
+  "content": "# 雅可比猜想（Jacobian Conjecture）的现状\n\n## 简短回答：几乎可以肯定这不是真的。\n\n雅可比猜想截至目前（2025年）**仍然是未解决的公开问题**，没有被证明，也没有被证伪。\n\n## 猜想的内容\n\n对于多项式映射 $F: \\mathbb{C}^n \\to \\mathbb{C}^n$，如果其雅可比行列式\n$$\\det\\left(\\frac{\\partial F_i}{\\partial x_j}\\right) \\equiv \\text{非零常数}$$\n则 $F$ 是多项式自同构（特别地，是双射）。\n\n## 为什么你看到的说法大概率不可靠\n\n1. **历史上\"反例\"屡次翻车**：这个猜想自1939年由Keller提出以来，已经有**多次**声称找到反例或证明的论文，最终都被发现有错误。这是数学界的\"经典陷阱\"之一。\n\n2. **验证门槛极高**：要构造真正的反例，你需要：\n   - 一个具体的多项式映射 $F: \\mathbb{C}^3 \\to \\mathbb{C}^3$\n   - 严格证明其雅可比行列式恒为常数\n   - 严格证明它**不是**单射（即找到 $a \\neq b$ 使得 $F(a) = F(b)$）\n\n   这三条同时满足是极其困难的，而且历史上每次声称的\"反例\"都在某一步出了错。\n\n3. **如果是真的，这将是重大数学事件**：雅可比猜想被Smale列入\"21世纪的数学问题\"之一。如果真被证伪，必然会在数学界引起巨大轰动，各大数学新闻平台、ArXiv上会迅速传开并被顶级专家审查。\n\n## 建议\n\n- 看看消息来源是否有**正式的预印本**（如arXiv链接）\n- 看看是否有**知名数学家**背书或讨论\n- 大概率是误传、误解、或者是一个尚未经过同行审查的错误声称\n\n> 在数学界有句半开玩笑的话：雅可比猜想的历史，就是一部\"错误证明和错误反例\"的历史。保持健康的怀疑态度是明智的。",
+  "finish": "stop",
+  "usage": {
+    "prompt_tokens": 98,
+    "completion_tokens": 722,
+    "total_tokens": 820,
+    "cost": 0.01854,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.01854,
+      "upstream_inference_prompt_cost": 0.00049,
+      "upstream_inference_completions_cost": 0.01805
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "error": null
+}

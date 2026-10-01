@@ -17,6 +17,7 @@ Contents
 - LLM Validation Failure
 
 - Concurrency Limits Are Layered
+- Jacobian Conjecture Probe (knowledge-cutoff wall + long-CoT black hole) → [`jacobian-conjecture-probe/`](jacobian-conjecture-probe/)
 ---
 
 Motivation

@@ -1,0 +1,36 @@
+{
+  "name": "gpt",
+  "variant": "C",
+  "requested_model": "or/openai/gpt-6-luna",
+  "http": 200,
+  "ms": 20445,
+  "served_model": "openai/gpt-6-luna",
+  "provider": "OpenAI",
+  "reasoning": "**Exploring the Jacobian Conjecture**\n\nI’m considering an example of a map from R^3 to R^3 that has a constant Jacobian but isn't bijective, which might not be polynomial and doesn’t really refute the Jacobian Conjecture. I need to clarify the distinctions here. It seems that when people say “Jacobian conjecture has been disproved in dimension 3,” they might mean something about a “nonproper polynomial map.” I’ll need to look into the known facts about the Jacobian conjecture to understand better.",
+  "content": "**如果这个“反例”是多项式映射，那就不是真的：雅可比猜想目前仍是未解问题。**经典雅可比猜想讨论的是复数域上的多项式映射\n\\[\nF:\\mathbb C^n\\to\\mathbb C^n,\n\\]\n若雅可比行列式恒为非零常数，是否必定有多项式逆映射。它在 \\(n=2,3\\) 等维数仍未解决；目前没有公认的多项式反例。\n\n不过，若不要求映射是**多项式**，确实很容易造出三维反例。例如\n\\[\nF(x,y,z)=\\bigl(e^x\\cos y,\\ e^x\\sin y,\\ e^{-2x}z\\bigr).\n\\]\n它的雅可比行列式恒为 \\(1\\)，但\n\\[\nF(x,y+2\\pi,z)=F(x,y,z),\n\\]\n所以它不是单射。这个映射是实解析的（甚至可看作复解析映射），但含有指数和三角函数，**不是多项式映射**，因此不反驳雅可比猜想。\n\n关键区别就在“映射是多项式”这一条件。若有人声称找到了三维**多项式**反例，那将是数学界的重大突破；目前并没有这样的已验证结果。",
+  "finish": "stop",
+  "usage": {
+    "prompt_tokens": 71,
+    "completion_tokens": 2206,
+    "total_tokens": 2277,
+    "cost": 0.0011101,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.0011101,
+      "upstream_inference_prompt_cost": 0.0000071,
+      "upstream_inference_completions_cost": 0.001103
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 1885,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "error": null
+}
