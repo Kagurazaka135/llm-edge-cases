@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>鹈鹕骑行动画</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #87CEEB; /* 天空蓝 */
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 天空和太阳 */
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to bottom, #87CEEB, #B0E2FF);
+        }
+        
+        .sun {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            width: 60px;
+            height: 60px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #FFA500;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+        
+        .cloud1 {
+            top: 80px;
+            left: 200px;
+            width: 100px;
+            height: 40px;
+        }
+        
+        .cloud2 {
+            top: 120px;
+            left: 400px;
+            width: 120px;
+            height: 35px;
+        }
+        
+        /* 大海 */
+        .sea {
+            position: absolute;
+            top: 60%;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: #1E90FF;
+            overflow: hidden;
+        }
+        
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: transparent;
+            border-top: 3px solid #0000CD;
+        }
+        
+        .wave1 { top: 10px; }
+        .wave2 { top: 30px; }
+        .wave3 { top: 50px; }
+        
+        /* 沙滩 */
+        .beach {
+            position: absolute;
+            top: 80%;
+            left: 0;
+            width: 100%;
+            height: 5%;
+            background: #F4A460;
+        }
+        
+        /* 公路 */
+        .road {
+            position: absolute;
+            top: 85%;
+            left: 0;
+            width: 100%;
+            height: 15%;
+            background: #696969;
+            overflow: hidden;
+        }
+        
+        .road-line {
+            position: absolute;
+            top: 45%;
+            width: 100%;
+            height: 5px;
+            background: repeating-linear-gradient(
+                to right,
+                white,
+                white 20px,
+                transparent 20px,
+                transparent 40px
+            );
+        }
+        
+        /* 棕榈树 */
+        .palm-tree {
+            position: absolute;
+            bottom: 15%;
+        }
+        
+        .palm-trunk {
+            position: absolute;
+            width: 10px;
+            height: 80px;
+            background: #8B4513;
+            bottom: 0;
+        }
+        
+        .palm-leaves {
+            position: absolute;
+            bottom: 80px;
+            left: -20px;
+            width: 40px;
+            height: 40px;
+            background: #228B22;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        
+        .palm1 { left: 100px; }
+        .palm2 { left: 300px; }
+        .palm3 { left: 700px; }
+        
+        /* 灯塔 */
+        .lighthouse {
+            position: absolute;
+            bottom: 15%;
+            right: 150px;
+        }
+        
+        .lighthouse-tower {
+            width: 20px;
+            height: 100px;
+            background: linear-gradient(to right, #FF6347, #DC143C);
+            position: relative;
+        }
+        
+        .lighthouse-top {
+            width: 30px;
+            height: 20px;
+            background: #FFD700;
+            position: absolute;
+            top: -20px;
+            left: -5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .lighthouse-light {
+            width: 10px;
+            height: 10px;
+            background: yellow;
+            border-radius: 50%;
+            position: absolute;
+            top: -15px;
+            left: 5px;
+            animation: light 2s infinite alternate;
+        }
+        
+        /* 自行车和鹈鹕 */
+        .bicycle-container {
+            position: absolute;
+            bottom: 22%;
+            left: 30%;
+            transform: translateX(-50%);
+        }
+        
+        .bicycle {
+            position: relative;
+            width: 200px;
+            height: 100px;
+        }
+        
+        /* 自行车框架 */
+        .frame {
+            position: absolute;
+            width: 150px;
+            height: 80px;
+            border: 8px solid red;
+            border-top: none;
+            border-right: none;
+            border-radius: 0 0 0 80px;
+            top: 10px;
+            left: 25px;
+        }
+        
+        .frame::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 8px;
+            background: red;
+            top: 80px;
+            left: 142px;
+            transform: rotate(45deg);
+            transform-origin: left;
+        }
+        
+        /* 车轮 */
+        .wheel {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #333;
+            border-radius: 50%;
+            background: transparent;
+        }
+        
+        .front-wheel {
+            top: 40px;
+            left: 160px;
+        }
+        
+        .back-wheel {
+            top: 40px;
+            left: 0;
+        }
+        
+        .spoke {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: #333;
+            top: 0;
+            left: 29px;
+            transform-origin: bottom;
+        }
+        
+        /* 车把 */
+        .handlebar {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            border: 5px solid red;
+            border-bottom: none;
+            border-radius: 40px 40px 0 0;
+            top: 0;
+            left: 140px;
+        }
+        
+        /* 脚踏 */
+        .pedal {
+            position: absolute;
+            width: 40px;
+            height: 5px;
+            background: orange;
+            top: 70px;
+            left: 70px;
+            transform-origin: left;
+        }
+        
+        /* 鹈鹕 */
+        .pelican {
+            position: absolute;
+            top: -40px;
+            left: 70px;
+            z-index: 10;
+        }
+        
+        .pelican-body {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            top: 30px;
+            left: 0;
+        }
+        
+        .pelican-neck {
+            position: absolute;
+            width: 15px;
+            height: 40px;
+            background: white;
+            border-radius: 7px;
+            top: 10px;
+            left: 25px;
+            transform: rotate(-10deg);
+        }
+        
+        .pelican-head {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: -10px;
+            left: 15px;
+        }
+        
+        .pelican-beak {
+            position: absolute;
+            width: 50px;
+            height: 15px;
+            background: #FFA500;
+            border-radius: 50px 10px 10px 50px;
+            top: -5px;
+            left: -10px;
+        }
+        
+        .pelican-pouch {
+            position: absolute;
+            width: 30px;
+            height: 10px;
+            background: yellow;
+            border-radius: 0 0 15px 15px;
+            top: 10px;
+            left: 0;
+        }
+        
+        .pelican-eye {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: black;
+            border-radius: 50%;
+            top: -5px;
+            left: 30px;
+        }
+        
+        .pelican-wing {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: white;
+            border: 2px solid black;
+            border-radius: 50px 0 0 50px;
+            top: 30px;
+            left: 45px;
+            transform: rotate(-20deg);
+        }
+        
+        .pelican-leg {
+            position: absolute;
+            width: 5px;
+            height: 30px;
+            background: orange;
+            top: 70px;
+        }
+        
+        .leg-left {
+            left: 25px;
+            transform-origin: top;
+        }
+        
+        .leg-right {
+            left: 40px;
+            transform-origin: top;
+        }
+        
+        .pelican-foot {
+            position: absolute;
+            width: 15px;
+            height: 5px;
+            background: orange;
+            top: 30px;
+            left: -5px;
+            border-radius: 5px;
+        }
+        
+        /* 动画 */
+        @keyframes wheel-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pedal-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes leg-cycle {
+            0%, 100% { transform: rotate(-30deg); }
+            50% { transform: rotate(30deg); }
+        }
+        
+        @keyframes road-move {
+            from { transform: translateX(0); }
+            to { transform: translateX(-40px); }
+        }
+        
+        @keyframes wave-move {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100px); }
+        }
+        
+        @keyframes light {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+        
+        .wheel {
+            animation: wheel-rotate 1s linear infinite;
+        }
+        
+        .pedal {
+            animation: pedal-rotate 1s linear infinite;
+        }
+        
+        .leg-left {
+            animation: leg-cycle 0.5s ease-in-out infinite;
+        }
+        
+        .leg-right {
+            animation: leg-cycle 0.5s ease-in-out infinite 0.25s;
+        }
+        
+        .road-line {
+            animation: road-move 1s linear infinite;
+        }
+        
+        .wave {
+            animation: wave-move 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 天空和云 -->
+        <div class="sky">
+            <div class="sun"></div>
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+        </div>
+        
+        <!-- 大海和波浪 -->
+        <div class="sea">
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+        </div>
+        
+        <!-- 沙滩 -->
+        <div class="beach"></div>
+        
+        <!-- 公路 -->
+        <div class="road">
+            <div class="road-line"></div>
+        </div>
+        
+        <!-- 棕榈树 -->
+        <div class="palm-tree palm1">
+            <div class="palm-trunk"></div>
+            <div class="palm-leaves"></div>
+        </div>
+        <div class="palm-tree palm2">
+            <div class="palm-trunk"></div>
+            <div class="palm-leaves"></div>
+        </div>
+        <div class="palm-tree palm3">
+            <div class="palm-trunk"></div>
+            <div class="palm-leaves"></div>
+        </div>
+        
+        <!-- 灯塔 -->
+        <div class="lighthouse">
+            <div class="lighthouse-tower">
+                <div class="lighthouse-top"></div>
+                <div class="lighthouse-light"></div>
+            </div>
+        </div>
+        
+        <!-- 自行车和鹈鹕 -->
+        <div class="bicycle-container">
+            <div class="bicycle">
+                <!-- 自行车框架 -->
+                <div class="frame"></div>
+                
+                <!-- 车轮 -->
+                <div class="wheel front-wheel">
+                    <div class="spoke" style="transform: rotate(0deg);"></div>
+                    <div class="spoke" style="transform: rotate(45deg);"></div>
+                    <div class="spoke" style="transform: rotate(90deg);"></div>
+                    <div class="spoke" style="transform: rotate(135deg);"></div>
+                </div>
+                <div class="wheel back-wheel">
+                    <div class="spoke" style="transform: rotate(0deg);"></div>
+                    <div class="spoke" style="transform: rotate(45deg);"></div>
+                    <div class="spoke" style="transform: rotate(90deg);"></div>
+                    <div class="spoke" style="transform: rotate(135deg);"></div>
+                </div>
+                
+                <!-- 车把 -->
+                <div class="handlebar"></div>
+                
+                <!-- 脚踏 -->
+                <div class="pedal"></div>
+                
+                <!-- 鹈鹕 -->
+                <div class="pelican">
+                    <div class="pelican-body"></div>
+                    <div class="pelican-neck"></div>
+                    <div class="pelican-head"></div>
+                    <div class="pelican-beak"></div>
+                    <div class="pelican-pouch"></div>
+                    <div class="pelican-eye"></div>
+                    <div class="pelican-wing"></div>
+                    <div class="pelican-leg leg-left">
+                        <div class="pelican-foot"></div>
+                    </div>
+                    <div class="pelican-leg leg-right">
+                        <div class="pelican-foot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

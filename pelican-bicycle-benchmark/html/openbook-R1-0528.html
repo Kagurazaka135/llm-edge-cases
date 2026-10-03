@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>鹈鹕骑行</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #87CEEB; /* 天空蓝 */
+    }
+    
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    /* 太阳 */
+    .sun {
+      position: absolute;
+      top: 20px;
+      right: 50px;
+      width: 60px;
+      height: 60px;
+      background: #FFD700;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #FFA500;
+    }
+    
+    /* 云朵 */
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud:nth-child(1) {
+      top: 40px;
+      left: 20%;
+      width: 60px;
+      height: 30px;
+    }
+    .cloud:nth-child(2) {
+      top: 70px;
+      left: 35%;
+      width: 80px;
+      height: 40px;
+    }
+    .cloud:nth-child(3) {
+      top: 30px;
+      right: 30%;
+      width: 100px;
+      height: 45px;
+    }
+    
+    /* 大海 */
+    .sea {
+      position: absolute;
+      bottom: 90px;
+      width: 100%;
+      height: 80px;
+      background: #1E90FF;
+      overflow: hidden;
+    }
+    
+    /* 海浪 */
+    .wave {
+      position: absolute;
+      top: 10px;
+      width: 200%;
+      height: 100%;
+      background: 
+        linear-gradient(transparent 60%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0.7) 65%, transparent 65%),
+        linear-gradient(transparent 75%, rgba(255,255,255,0.6) 75%, rgba(255,255,255,0.6) 80%, transparent 80%),
+        linear-gradient(transparent 40%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.8) 45%, transparent 45%);
+      animation: waves 4s linear infinite;
+    }
+    
+    /* 沙滩 */
+    .sand {
+      position: absolute;
+      bottom: 90px;
+      width: 100%;
+      height: 15px;
+      background: #D2B48C; /* 沙色 */
+    }
+    
+    /* 公路 */
+    .road {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 90px;
+      background: #808080; /* 灰色 */
+      overflow: hidden;
+    }
+    
+    /* 公路虚线 */
+    .road-line {
+      position: absolute;
+      top: 42px;
+      width: 200%;
+      height: 6px;
+      background: repeating-linear-gradient(
+        to right,
+        white 0,
+        white 20px,
+        transparent 20px,
+        transparent 40px
+      );
+      animation: roadMove 2s linear infinite;
+    }
+    
+    /* 棕榈树 */
+    .palm-tree {
+      position: absolute;
+      bottom: 90px;
+      height: 100px;
+    }
+    .palm-tree:nth-child(1) { left: 10%; }
+    .palm-tree:nth-child(2) { left: 40%; }
+    .palm-tree:nth-child(3) { right: 20%; }
+    
+    /* 树干 */
+    .trunk {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 8px;
+      height: 70px;
+      background: #8B4513; /* 棕色 */
+      transform: translateX(-50%);
+    }
+    
+    /* 树叶 */
+    .leaf {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 40px solid #32CD32; /* 绿色 */
+      transform: translateX(-50%);
+    }
+    
+    /* 灯塔 */
+    .lighthouse {
+      position: absolute;
+      bottom: 90px;
+      right: 10%;
+      width: 25px;
+      height: 70px;
+      background: 
+        linear-gradient(
+          to right, 
+          #FF0000 0%, 
+          #FF0000 40%, 
+          #FFFFFF 40%, 
+          #FFFFFF 60%, 
+          #FF0000 60%, 
+          #FF0000 100%
+        );
+    }
+    .lighthouse-top {
+      position: absolute;
+      top: -15px;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      background: #C0C0C0;
+      border-radius: 50% 50% 0 0;
+    }
+    .light {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: #FFD700;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      animation: light 2s infinite alternate;
+    }
+    
+    /* 自行车主体 */
+    .bicycle {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      width: 200px;
+      height: 120px;
+      transform: translateX(-50%);
+    }
+    
+    /* 车架 */
+    .frame {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      width: 120px;
+      height: 60px;
+      border: 8px solid #FF0000;
+      border-right: none;
+      border-top: none;
+      border-radius: 0 0 0 40px;
+    }
+    
+    /* 座垫 */
+    .saddle {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      width: 15px;
+      height: 10px;
+      background: #000;
+      border-radius: 30% 30% 0 0;
+    }
+    
+    /* 车把 */
+    .handlebar {
+      position: absolute;
+      top: 40px;
+      left: 150px;
+      width: 30px;
+      height: 30px;
+      border: 4px solid #000;
+      border-radius: 50%;
+      transform: rotate(-30deg);
+    }
+    
+    /* 车轮 */
+    .wheel {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border: 3px solid #000;
+      border-radius: 50%;
+    }
+    .front-wheel { top: 60px; left: 160px; }
+    .rear-wheel { top: 60px; left: 50px; }
+    
+    /* 辐条 */
+    .spoke {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 25px;
+      background: #000;
+      transform-origin: 0 0;
+    }
+    
+    /* 脚踏 */
+    .pedal {
+      position: absolute;
+      width: 8px;
+      height: 25px;
+      background: #FFA500;
+      border-radius: 4px;
+    }
+    .pedal-axle {
+      position: absolute;
+      top: 75px;
+      left: 100px;
+      width: 5px;
+      height: 5px;
+      background: #000;
+      border-radius: 50%;
+    }
+    
+    /* 鹈鹕 */
+    .pelican {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+    }
+    
+    /* 身体 */
+    .body {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      width: 50px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* 脖子 */
+    .neck {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      width: 15px;
+      height: 40px;
+      background: white;
+      border-radius: 10px;
+      transform: translateX(-50%);
+    }
+    
+    /* 头部 */
+    .head {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 35px;
+      height: 30px;
+      background: white;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* 喙 */
+    .beak {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      width: 60px;
+      height: 20px;
+      background: #FFA500;
+      border-radius: 50% 0 0 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* 喉囊 */
+    .pouch {
+      position: absolute;
+      top: 25px;
+      left: calc(50% - 5px);
+      width: 20px;
+      height: 15px;
+      background: #FFD700;
+      border-radius: 0 0 50% 50%;
+    }
+    
+    /* 眼睛 */
+    .eye {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 5px;
+      height: 5px;
+      background: #000;
+      border-radius: 50%;
+    }
+    
+    /* 翅膀 */
+    .wing {
+      position: absolute;
+      top: 45px;
+      width: 30px;
+      height: 15px;
+      background: white;
+      border-right: 5px solid #000;
+      border-radius: 50%;
+    }
+    .wing-front {
+      left: calc(50% + 15px);
+      transform: rotate(-30deg);
+    }
+    .wing-back {
+      right: calc(50% + 15px);
+      transform: rotate(30deg) scaleX(-1);
+    }
+    
+    /* 腿 */
+    .leg {
+      position: absolute;
+      top: 75px;
+      width: 5px;
+      height: 30px;
+      background: #FFA500;
+      border-radius: 2px;
+      transform-origin: top center;
+    }
+    .leg-left { left: calc(50% - 15px); }
+    .leg-right { left: calc(50% + 15px); }
+    
+    /* 动画定义 */
+    @keyframes pedalMotion {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(20deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(-20deg); }
+    }
+    
+    @keyframes wheelSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes roadMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    
+    @keyframes waves {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    
+    @keyframes light {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+    
+    /* 应用动画 */
+    .pedal-left { animation: pedalMotion 1s infinite; }
+    .pedal-right { animation: pedalMotion 1s infinite reverse; }
+    
+    .wheel { animation: wheelSpin 1s linear infinite; }
+    
+    .leg-left { animation: pedalMotion 1s infinite; }
+    .leg-right { animation: pedalMotion 1s infinite reverse; }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <!-- 天空和太阳 -->
+    <div class="sun"></div>
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+    
+    <!-- 大海和波浪 -->
+    <div class="sea">
+      <div class="wave"></div>
+    </div>
+    
+    <!-- 沙滩 -->
+    <div class="sand"></div>
+    
+    <!-- 公路和虚线 -->
+    <div class="road">
+      <div class="road-line"></div>
+    </div>
+    
+    <!-- 棕榈树 -->
+    <div class="palm-tree">
+      <div class="trunk"></div>
+      <div class="leaf"></div>
+    </div>
+    <div class="palm-tree">
+      <div class="trunk"></div>
+      <div class="leaf"></div>
+    </div>
+    <div class="palm-tree">
+      <div class="trunk"></div>
+      <div class="leaf"></div>
+    </div>
+    
+    <!-- 灯塔 -->
+    <div class="lighthouse">
+      <div class="lighthouse-top"></div>
+      <div class="light"></div>
+    </div>
+    
+    <!-- 自行车 -->
+    <div class="bicycle">
+      <div class="frame"></div>
+      <div class="saddle"></div>
+      <div class="handlebar"></div>
+      
+      <div class="wheel front-wheel">
+        <!-- 辐条 -->
+        <div class="spoke" style="transform: rotate(0deg)"></div>
+        <div class="spoke" style="transform: rotate(45deg)"></div>
+        <div class="spoke" style="transform: rotate(90deg)"></div>
+        <div class="spoke" style="transform: rotate(135deg)"></div>
+        <div class="spoke" style="transform: rotate(180deg)"></div>
+        <div class="spoke" style="transform: rotate(225deg)"></div>
+        <div class="spoke" style="transform: rotate(270deg)"></div>
+        <div class="spoke" style="transform: rotate(315deg)"></div>
+      </div>
+      
+      <div class="wheel rear-wheel">
+        <!-- 辐条 -->
+        <div class="spoke" style="transform: rotate(0deg)"></div>
+        <div class="spoke" style="transform: rotate(45deg)"></div>
+        <div class="spoke" style="transform: rotate(90deg)"></div>
+        <div class="spoke" style="transform: rotate(135deg)"></div>
+        <div class="spoke" style="transform: rotate(180deg)"></div>
+        <div class="spoke" style="transform: rotate(225deg)"></div>
+        <div class="spoke" style="transform: rotate(270deg)"></div>
+        <div class="spoke" style="transform: rotate(315deg)"></div>
+      </div>
+      
+      <div class="pedal-axle"></div>
+      <div class="pedal pedal-left" style="top: 62px; left: 100px; transform-origin: top center"></div>
+      <div class="pedal pedal-right" style="top: 88px; left: 100px; transform-origin: top center"></div>
+    </div>
+    
+    <!-- 鹈鹕 -->
+    <div class="pelican">
+      <div class="body"></div>
+      <div class="neck"></div>
+      <div class="head"></div>
+      <div class="beak"></div>
+      <div class="pouch"></div>
+      <div class="eye"></div>
+      <div class="wing wing-front"></div>
+      <div class="wing wing-back"></div>
+      <div class="leg leg-left"></div>
+      <div class="leg leg-right"></div>
+    </div>
+  </div>
+
+  <script>
+    // 辐条旋转同步车轮
+    document.querySelectorAll('.wheel').forEach(wheel => {
+      const spokes = wheel.querySelectorAll('.spoke');
+      let rotation = 0;
+      
+      setInterval(() => {
+        rotation = (rotation + 45) % 360;
+        spokes.forEach(spoke => {
+          const currentRot = parseInt(spoke.style.transform.match(/\d+/)[0]);
+          spoke.style.transform = `rotate(${(currentRot + 45) % 360}deg)`;
+        });
+      }, 125);
+    });
+  </script>
+</body>
+</html>

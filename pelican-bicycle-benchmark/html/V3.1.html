@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>鹈鹕骑行记</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB 60%, #1E90FF 100%);
+        }
+        
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .road {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 25%;
+            background: #555;
+            animation: roadMove 4s linear infinite;
+        }
+        
+        .road-line {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 10px;
+            background: repeating-linear-gradient(
+                to right,
+                yellow 0%,
+                yellow 10%,
+                transparent 10%,
+                transparent 20%
+            );
+        }
+        
+        .sea {
+            position: absolute;
+            bottom: 25%;
+            width: 100%;
+            height: 15%;
+            background: #1E90FF;
+        }
+        
+        .wave {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0 10 Q25 5 50 10 T100 10 V20 H0 Z" fill="%230077BE"/></svg>');
+            animation: waveMove 3s linear infinite;
+        }
+        
+        .sun {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            width: 60px;
+            height: 60px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #FFA500;
+        }
+        
+        .bike {
+            position: absolute;
+            bottom: 25%;
+            left: 30%;
+            transform: translateX(-50%);
+            animation: bikeMove 8s linear infinite;
+        }
+        
+        .frame {
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            border: 10px solid #333;
+            border-radius: 100px 0 0 0 / 50px 0 0 0;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .wheel {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 8px solid #333;
+            border-radius: 50%;
+            background: transparent;
+        }
+        
+        .wheel-front {
+            top: 20px;
+            left: 150px;
+        }
+        
+        .wheel-back {
+            top: 20px;
+            left: 30px;
+        }
+        
+        .spoke {
+            position: absolute;
+            width: 4px;
+            height: 40px;
+            background: #333;
+            top: 20px;
+            left: 38px;
+            transform-origin: center top;
+        }
+        
+        .spoke:nth-child(2) { transform: rotate(60deg); }
+        .spoke:nth-child(3) { transform: rotate(120deg); }
+        .spoke:nth-child(4) { transform: rotate(180deg); }
+        .spoke:nth-child(5) { transform: rotate(240deg); }
+        .spoke:nth-child(6) { transform: rotate(300deg); }
+        
+        .pelican {
+            position: absolute;
+            top: -40px;
+            left: 60px;
+        }
+        
+        .body {
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50% 50% 40% 40%;
+        }
+        
+        .beak {
+            position: absolute;
+            top: 15px;
+            left: -20px;
+            width: 30px;
+            height: 15px;
+            background: #FF8C00;
+            border-radius: 50% 0 0 50%;
+        }
+        
+        .pedal {
+            position: absolute;
+            top: 60px;
+            left: 90px;
+            width: 10px;
+            height: 40px;
+            background: #333;
+            transform-origin: center top;
+            animation: pedalRotate 1s linear infinite;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        
+        .cloud1 {
+            top: 80px;
+            left: 10%;
+            width: 60px;
+            height: 30px;
+            animation: cloudMove 20s linear infinite;
+        }
+        
+        .cloud2 {
+            top: 120px;
+            left: 40%;
+            width: 80px;
+            height: 40px;
+            animation: cloudMove 25s linear infinite;
+        }
+        
+        @keyframes roadMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100px); }
+        }
+        
+        @keyframes bikeMove {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+        
+        @keyframes pedalRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes cloudMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="sun"></div>
+        
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        
+        <div class="sea">
+            <div class="wave"></div>
+        </div>
+        
+        <div class="road">
+            <div class="road-line"></div>
+        </div>
+        
+        <div class="bike">
+            <div class="frame"></div>
+            
+            <div class="wheel wheel-front">
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+            </div>
+            
+            <div class="wheel wheel-back">
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+                <div class="spoke"></div>
+            </div>
+            
+            <div class="pedal"></div>
+            
+            <div class="pelican">
+                <div class="body"></div>
+                <div class="beak"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 让车轮随踏板转动
+        document.addEventListener('DOMContentLoaded', function() {
+            const wheels = document.querySelectorAll('.wheel');
+            const pedal = document.querySelector('.pedal');
+            
+            function rotateWheels() {
+                wheels.forEach(wheel => {
+                    const currentRotate = wheel.style.transform ?
+                        parseInt(wheel.style.transform.replace('rotate(', '')) : 0;
+                    wheel.style.transform = `rotate(${currentRotate + 10}deg)`;
+                });
+            }
+            
+            setInterval(rotateWheels, 50);
+        });
+    </script>
+</body>
+</html>

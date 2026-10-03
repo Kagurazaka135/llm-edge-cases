@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公路骑行 · 动画</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px 16px;
+    background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1120 70%);
+    font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #e2e8f0;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .stage {
+    width: min(920px, 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    line-height: 0;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .65), 0 0 0 1px rgba(255, 255, 255, .08);
+  }
+
+  svg { display: block; width: 100%; height: auto; }
+
+  /* ---------- 云 ---------- */
+  .cloud {
+    animation-name: drift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+  @keyframes drift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-1800px); }
+  }
+
+  /* ---------- HUD ---------- */
+  .hud {
+    width: min(920px, 100%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 6px;
+    font-size: 14px;
+    letter-spacing: .5px;
+  }
+  .hud .label { opacity: .6; font-weight: 600; }
+  .bar {
+    flex: 1;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, .18);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .5);
+  }
+  #speedBar {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #22d3ee, #34d399, #facc15, #f87171);
+    transition: width .06s linear;
+  }
+  #speedText {
+    min-width: 76px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: #7dd3fc;
+  }
+
+  /* ---------- 按钮 ---------- */
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 14px;
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    color: #fff;
+    cursor: pointer;
+    background: #334155;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, .4), 0 8px 18px rgba(0, 0, 0, .3);
+    transition: transform .07s ease, box-shadow .07s ease, filter .15s ease;
+    touch-action: none;
+    letter-spacing: .5px;
+  }
+  .btn:active,
+  .btn.active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 3px 10px rgba(0, 0, 0, .3);
+    filter: brightness(1.25);
+  }
+
+  .btn.accel { background: linear-gradient(180deg, #22c55e, #15803d); }
+  .btn.brake { background: linear-gradient(180deg, #ef4444, #b91c1c); }
+  .btn.turn  { background: linear-gradient(180deg, #3b82f6, #1d4ed8); }
+
+  .hint {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    letter-spacing: .5px;
+  }
+  .hint kbd {
+    background: rgba(148, 163, 184, .15);
+    border: 1px solid rgba(148, 163, 184, .25);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="公路骑行动画">
+    <defs>
+      <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#5fa8dd"/>
+        <stop offset="45%"  stop-color="#9ed2ef"/>
+        <stop offset="100%" stop-color="#e6f4fb"/>
+      </linearGradient>
+
+      <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#5b6572"/>
+        <stop offset="100%" stop-color="#2b323c"/>
+      </linearGradient>
+
+      <radialGradient id="sunGlow">
+        <stop offset="0%"   stop-color="#fff8c9" stop-opacity="0.95"/>
+        <stop offset="45%"  stop-color="#ffe9a3" stop-opacity="0.45"/>
+        <stop offset="100%" stop-color="#ffe9a3" stop-opacity="0"/>
+      </radialGradient>
+
+      <!-- 远山瓦片 -->
+      <g id="hillFarShape">
+        <path d="M0,300 L0,230 C80,160 160,160 240,230 C320,180 400,180 480,230 C540,200 570,200 600,230 L600,300 Z"
+              fill="#a9d3a0"/>
+      </g>
+
+      <!-- 近山瓦片 -->
+      <g id="hillNearShape">
+        <path d="M0,300 L0,252 C60,192 120,192 180,252 C240,202 300,202 360,252 C400,218 430,218 450,252 L450,300 Z"
+              fill="#7fb96f"/>
+      </g>
+
+      <!-- 树木瓦片 -->
+      <g id="treeShape">
+        <rect x="66" y="252" width="8" height="48" rx="3" fill="#6b4f3a"/>
+        <circle cx="70" cy="242" r="26" fill="#4f9c62"/>
+        <circle cx="50" cy="254" r="17" fill="#438a55"/>
+        <circle cx="90" cy="254" r="17" fill="#438a55"/>
+        <rect x="206" y="262" width="6" height="38" rx="3" fill="#6b4f3a"/>
+        <circle cx="209" cy="254" r="19" fill="#4f9c62"/>
+      </g>
+    </defs>
+
+    <!-- ============ 天空 ============ -->
+    <rect width="900" height="400" fill="url(#skyGrad)"/>
+
+    <!-- 太阳 -->
+    <circle cx="770" cy="72" r="70" fill="url(#sunGlow)"/>
+    <circle cx="770" cy="72" r="24" fill="#fff6c2"/>
+
+    <!-- 云 -->
+    <g id="cloudLayer">
+      <g transform="translate(900,66)">
+        <g class="cloud" style="animation-duration:120s; animation-delay:0s">
+          <ellipse cx="0" cy="0" rx="42" ry="20" fill="#fff" opacity=".92"/>
+          <ellipse cx="-30" cy="8" rx="25" ry="13" fill="#fff" opacity=".92"/>
+          <ellipse cx="30" cy="8" rx="27" ry="15" fill="#fff" opacity=".92"/>
+        </g>
+      </g>
+      <g transform="translate(1150,44)">
+        <g class="cloud" style="animation-duration:150s; animation-delay:-30s">
+          <ellipse cx="0" cy="0" rx="34" ry="16" fill="#fff" opacity=".8"/>
+          <ellipse cx="-24" cy="6" rx="20" ry="11" fill="#fff" opacity=".8"/>
+          <ellipse cx="24" cy="6" rx="22" ry="12" fill="#fff" opacity=".8"/>
+        </g>
+      </g>
+      <g transform="translate(1400,92)">
+        <g class="cloud" style="animation-duration:135s; animation-delay:-60s">
+          <ellipse cx="0" cy="0" rx="46" ry="21" fill="#fff" opacity=".95"/>
+          <ellipse cx="-32" cy="8" rx="26" ry="14" fill="#fff" opacity=".95"/>
+          <ellipse cx="32" cy="8" rx="28" ry="16" fill="#fff" opacity=".95"/>
+        </g>
+      </g>
+      <g transform="translate(1650,58)">
+        <g class="cloud" style="animation-duration:165s; animation-delay:-90s">
+          <ellipse cx="0" cy="0" rx="30" ry="14" fill="#fff" opacity=".75"/>
+          <ellipse cx="-22" cy="6" rx="18" ry="10" fill="#fff" opacity=".75"/>
+          <ellipse cx="22" cy="6" rx="20" ry="11" fill="#fff" opacity=".75"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- ============ 远山 ============ -->
+    <g id="hillFarLayer">
+      <use href="#hillFarShape" x="-600"/>
+      <use href="#hillFarShape" x="0"/>
+      <use href="#hillFarShape" x="600"/>
+      <use href="#hillFarShape" x="1200"/>
+    </g>
+
+    <!-- ============ 近山 ============ -->
+    <g id="hillLayer">
+      <use href="#hillNearShape" x="-450"/>
+      <use href="#hillNearShape" x="0"/>
+      <use href="#hillNearShape" x="450"/>
+      <use href="#hillNearShape" x="900"/>
+    </g>
+
+    <!-- ============ 树木 ============ -->
+    <g id="treeLayer">
+      <use href="#treeShape" x="-300"/>
+      <use href="#treeShape" x="0"/>
+      <use href="#treeShape" x="300"/>
+      <use href="#treeShape" x="600"/>
+      <use href="#treeShape" x="900"/>
+      <use href="#treeShape" x="1200"/>
+    </g>
+
+    <!-- ============ 公路 ============ -->
+    <rect x="0" y="300" width="900" height="100" fill="url(#roadGrad)"/>
+    <line x1="0" y1="300" x2="900" y2="300" stroke="#8b98a8" stroke-width="2" opacity=".5"/>
+    <line id="roadLine" x1="-200" y1="352" x2="1100" y2="352"
+          stroke="#f2d16b" stroke-width="6" stroke-dasharray="60 60" stroke-linecap="round" opacity=".85"/>
+
+    <!-- ============ 自行车 + 骑手 ============ -->
+    <g id="bikeRoot" transform="translate(400,300)">
+      <g id="bikeTilt">
+
+        <!-- 后轮 -->
+        <g id="wheelRear">
+          <circle cx="-110" cy="-40" r="40" fill="none" stroke="#1f2937" stroke-width="6"/>
+          <circle cx="-110" cy="-40" r="35" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+          <g stroke="#cbd5e1" stroke-width="1.1" opacity=".85">
+            <line x1="-110" y1="-40" x2="-110" y2="-74"/>
+            <line x1="-110" y1="-40" x2="-110" y2="-6"/>
+            <line x1="-110" y1="-40" x2="-144" y2="-40"/>
+            <line x1="-110" y1="-40" x2="-76"  y2="-40"/>
+            <line x1="-110" y1="-40" x2="-134" y2="-64"/>
+            <line x1="-110" y1="-40" x2="-86"  y2="-16"/>
+            <line x1="-110" y1="-40" x2="-86"  y2="-64"/>
+            <line x1="-110" y1="-40" x2="-134" y2="-16"/>
+          </g>
+          <circle cx="-110" cy="-40" r="4.5" fill="#64748b"/>
+        </g>
+
+        <!-- 前轮 -->
+        <g id="wheelFront">
+          <circle cx="40" cy="-40" r="40" fill="none" stroke="#1f2937" stroke-width="6"/>
+          <circle cx="40" cy="-40" r="35" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+          <g stroke="#cbd5e1" stroke-width="1.1" opacity=".85">
+            <line x1="40" y1="-40" x2="40" y2="-74"/>
+            <line x1="40" y1="-40" x2="40" y2="-6"/>
+            <line x1="40" y1="-40" x2="6"  y2="-40"/>
+            <line x1="40" y1="-40" x2="74" y2="-40"/>
+            <line x1="40" y1="-40" x2="16" y2="-64"/>
+            <line x1="40" y1="-40" x2="64" y2="-16"/>
+            <line x1="40" y1="-40" x2="64" y2="-64"/>
+            <line x1="40" y1="-40" x2="16" y2="-16"/>
+          </g>
+          <circle cx="40" cy="-40" r="4.5" fill="#64748b"/>
+        </g>
+
+        <!-- 远侧曲柄 -->
+        <g id="crankFar">
+          <line x1="-60" y1="-35" x2="-60" y2="-17" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="-60" cy="-17" r="5" fill="#334155"/>
+        </g>
+
+        <!-- 远侧腿 -->
+        <g id="legFar" stroke="#1e3a8a" stroke-linecap="round" fill="none">
+          <line id="thighFar" stroke-width="14"/>
+          <line id="shinFar"  stroke-width="11"/>
+        </g>
+        <circle id="footFar" r="6" fill="#1e3a8a"/>
+
+        <!-- 车架 -->
+        <g id="frame">
+          <g stroke="#ef4444" stroke-width="6" stroke-linecap="round" fill="none">
+            <line x1="-60" y1="-35" x2="-110" y2="-40"/>
+            <line x1="-85" y1="-95" x2="-110" y2="-40"/>
+            <line x1="-60" y1="-35" x2="-85"  y2="-95"/>
+            <line x1="-60" y1="-35" x2="28"   y2="-82"/>
+            <line x1="-85" y1="-95" x2="20"   y2="-108"/>
+            <line x1="20"  y1="-108" x2="28"  y2="-82"/>
+          </g>
+          <!-- 前叉 -->
+          <line x1="28" y1="-82" x2="40" y2="-40" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+          <!-- 座垫 -->
+          <ellipse cx="-85" cy="-97" rx="14" ry="5" fill="#1f2937"/>
+          <!-- 车把 -->
+          <path d="M14,-110 L38,-105 Q47,-103 45,-93 Q44,-86 36,-86"
+                fill="none" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/>
+          <line x1="20" y1="-108" x2="14" y2="-110" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+        </g>
+
+        <!-- 近侧曲柄 -->
+        <g id="crankNear">
+          <line x1="-60" y1="-35" x2="-60" y2="-17" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="-60" cy="-17" r="5.5" fill="#475569"/>
+        </g>
+
+        <!-- 近侧腿 -->
+        <g id="legNear" stroke="#2563eb" stroke-linecap="round" fill="none">
+          <line id="thighNear" stroke-width="15"/>
+          <line id="shinNear"  stroke-width="12"/>
+        </g>
+        <circle id="footNear" r="6.5" fill="#2563eb"/>
+
+        <!-- 骑手 -->
+        <g id="rider">
+          <line x1="-78" y1="-100" x2="-28" y2="-146"
+                stroke="#2563eb" stroke-width="27" stroke-linecap="round"/>
+          <line x1="-26" y1="-150" x2="-18" y2="-158"
+                stroke="#f0c39b" stroke-width="9" stroke-linecap="round"/>
+          <polyline points="-28,-146 0,-132 24,-106"
+                    fill="none" stroke="#f0c39b" stroke-width="9"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="-12" cy="-166" r="13" fill="#f0c39b"/>
+          <path d="M-26.5,-167 A14.5,14.5 0 0 1 2.5,-167 Z" fill="#ef4444"/>
+          <path d="M2.5,-167 L10,-164" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+        </g>
+
+      </g>
+    </g>
+  </svg>
+</div>
+
+<!-- ============ HUD ============ -->
+<div class="hud">
+  <span class="label">速度</span>
+  <div class="bar"><div id="speedBar"></div></div>
+  <span id="speedText">0 km/h</span>
+</div>
+
+<!-- ============ 控制按钮 ============ -->
+<div class="controls">
+  <button class="btn accel" id="btnAccel">🚀 加速</button>
+  <button class="btn brake" id="btnBrake">🛑 刹车</button>
+  <button class="btn turn"  id="btnLeft">↖ 左转</button>
+  <button class="btn turn"  id="btnRight">↗ 右转</button>
+</div>
+
+<p class="hint">按住按钮，或使用键盘 <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></p>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------------- 状态 ---------------- */
+  var S = {
+    speed: 0,          // 0 ~ 1
+    wheel: 0,          // 车轮角度
+    crank: 0,          // 曲柄角度
+    tilt: 0,           // 倾斜 -1 ~ 1
+    roadScroll: 0,
+    treeScroll: 0,
+    hillScroll: 0,
+    hillFarScroll: 0,
+    accel: false,
+    brake: false,
+    left: false,
+    right: false
+  };
+
+  /* ---------------- DOM ---------------- */
+  var D = {
+    wheelRear:  $('wheelRear'),
+    wheelFront: $('wheelFront'),
+    crankNear:  $('crankNear'),
+    crankFar:   $('crankFar'),
+    thighNear:  $('thighNear'),
+    shinNear:   $('shinNear'),
+    thighFar:   $('thighFar'),
+    shinFar:    $('shinFar'),
+    footNear:   $('footNear'),
+    footFar:    $('footFar'),
+    bikeTilt:   $('bikeTilt'),
+    roadLine:   $('roadLine'),
+    treeLayer:  $('treeLayer'),
+    hillLayer:  $('hillLayer'),
+    hillFarLayer: $('hillFarLayer'),
+    speedBar:   $('speedBar'),
+    speedText:  $('speedText')
+  };
+
+  /* ---------------- 工具函数 ---------------- */
+  function setLine(el, x1, y1, x2, y2) {
+    el.setAttribute('x1', x1);
+    el.setAttribute('y1', y1);
+    el.setAttribute('x2', x2);
+    el.setAttribute('y2', y2);
+  }
+
+  function setCircle(el, cx, cy) {
+    el.setAttribute('cx', cx);
+    el.setAttribute('cy', cy);
+  }
+
+  /**
+   * 两段式 IK：已知髋、脚位置与大腿/小腿长度，求膝盖位置
+   */
+  function solveLeg(hip, foot, l1, l2) {
+    var dx = foot.x - hip.x;
+    var dy = foot.y - hip.y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    var maxD = l1 + l2 - 0.5;
+
+    if (d > maxD) {
+      var s = maxD / d;
+      dx *= s; dy *= s; d = maxD;
+    }
+    if (d < 0.001) d = 0.001;
+
+    var a = (l1 * l1 - l2 * l2 + d * d) / (2 * d);
+    var h = Math.sqrt(Math.max(0, l1 * l1 - a * a));
+    var ux = dx / d;
+    var uy = dy / d;
+
+    return {
+      x: hip.x + a * ux + h * uy,
+      y: hip.y + a * uy - h * ux
+    };
+  }
+
+  /* ---------------- 物理更新 ---------------- */
+  function update(dt) {
+    // 速度
+    if (S.accel) S.speed += 0.75 * dt;
+    if (S.brake) S.speed -= 1.90 * dt;
+    if (!S.accel && !S.brake) S.speed -= 0.35 * dt;
+    S.speed = Math.max(0, Math.min(1, S.speed));
+
+    // 转向倾斜
+    var target = 0;
+    if (S.left)  target -= 1;
+    if (S.right) target += 1;
+    S.tilt += (target - S.tilt) * Math.min(1, dt * 8);
+
+    // 转动
+    S.wheel += S.speed * 1500 * dt;   // 车轮
+    S.crank += S.speed * 480 * dt;    // 曲柄（≈80rpm @ 满速）
+
+    // 背景滚动
+    S.roadScroll    += S.speed * 700 * dt;
+    S.treeScroll    += S.speed * 180 * dt;
+    S.hillScroll    += S.speed * 45  * dt;
+    S.hillFarScroll += S.speed * 22  * dt;
+  }
+
+  /* ---------------- 渲染 ---------------- */
+  function render() {
+    var rad = S.crank * Math.PI / 180;
+    var bbX = -60, bbY = -35, cr = 18;
+
+    // 曲柄端点（踏板）位置
+    var pNear = { x: bbX - cr * Math.sin(rad), y: bbY + cr * Math.cos(rad) };
+    var pFar  = { x: bbX + cr * Math.sin(rad), y: bbY - cr * Math.cos(rad) };
+
+    // 髋关节
+    var hipNear = { x: -78, y: -100 };
+    var hipFar  = { x: -83, y: -97  };
+
+    // 膝盖
+    var kNear = solveLeg(hipNear, pNear, 42, 44);
+    var kFar  = solveLeg(hipFar,  pFar,  42, 44);
+
+    // 腿
+    setLine(D.thighNear, hipNear.x, hipNear.y, kNear.x, kNear.y);
+    setLine(D.shinNear,  kNear.x,   kNear.y,   pNear.x, pNear.y);
+    setLine(D.thighFar,  hipFar.x,  hipFar.y,  kFar.x,  kFar.y);
+    setLine(D.shinFar,   kFar.x,    kFar.y,    pFar.x,  pFar.y);
+
+    setCircle(D.footNear, pNear.x, pNear.y);
+    setCircle(D.footFar,  pFar.x,  pFar.y);
+
+    // 车轮 / 曲柄旋转
+    D.wheelRear.setAttribute('transform',  'rotate(' + S.wheel + ' -110 -40)');
+    D.wheelFront.setAttribute('transform', 'rotate(' + S.wheel + ' 40 -40)');
+    D.crankNear.setAttribute('transform',  'rotate(' + S.crank + ' -60 -35)');
+    D.crankFar.setAttribute('transform',   'rotate(' + (S.crank + 180) + ' -60 -35)');
+
+    // 车身倾斜
+    D.bikeTilt.setAttribute('transform', 'rotate(' + (S.tilt * 6) + ' -35 0)');
+
+    // 背景滚动
+    D.roadLine.setAttribute('stroke-dashoffset', S.roadScroll % 120);
+    D.treeLayer.setAttribute('transform',    'translate(' + (-(S.treeScroll % 300)) + ',0)');
+    D.hillLayer.setAttribute('transform',    'translate(' + (-(S.hillScroll % 450)) + ',0)');
+    D.hillFarLayer.setAttribute('transform', 'translate(' + (-(S.hillFarScroll % 600)) + ',0)');
+
+    // HUD
+    D.speedBar.style.width = (S.speed * 100).toFixed(1) + '%';
+    D.speedText.textContent = Math.round(S.speed * 45) + ' km/h';
+  }
+
+  /* ---------------- 主循环 ---------------- */
+  var lastTime = 0;
+
+  function loop(now) {
+    if (!lastTime) lastTime = now;
+    var dt = (now - lastTime) / 1000;
+    lastTime = now;
+    if (dt > 0.05) dt = 0.05;   // 防止切后台后跳帧
+
+    update(dt);
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  /* ---------------- 输入：按钮 ---------------- */
+  function bindHold(el, key) {
+    function down(e) {
+      e.preventDefault();
+      if (el.setPointerCapture && e.pointerId != null) {
+        try { el.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      S[key] = true;
+      el.classList.add('active');
+    }
+    function up() {
+      S[key] = false;
+      el.classList.remove('active');
+    }
+    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    el.addEventListener('lostpointercapture', up);
+    el.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  }
+
+  bindHold($('btnAccel'), 'accel');
+  bindHold($('btnBrake'), 'brake');
+  bindHold($('btnLeft'),  'left');
+  bindHold($('btnRight'), 'right');
+
+  /* ---------------- 输入：键盘 ---------------- */
+  var KEYMAP = {
+    ArrowUp:    'accel', KeyW: 'accel',
+    ArrowDown:  'brake', KeyS: 'brake',
+    ArrowLeft:  'left',  KeyA: 'left',
+    ArrowRight: 'right', KeyD: 'right'
+  };
+
+  window.addEventListener('keydown', function (e) {
+    var k = KEYMAP[e.code];
+    if (k) { e.preventDefault(); S[k] = true; }
+  });
+
+  window.addEventListener('keyup', function (e) {
+    var k = KEYMAP[e.code];
+    if (k) { e.preventDefault(); S[k] = false; }
+  });
+
+  /* ---------------- 启动 ---------------- */
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelican Riding Bicycle</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            background: linear-gradient(to bottom, skyblue 50%, white 50%);
+        }
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .road {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 20%;
+            background: #808080;
+            animation: moveRoad 5s linear infinite;
+        }
+        .road-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(to right, white 0%, white 10%, yellow 10%, yellow 20%);
+        }
+        .beach {
+            position: absolute;
+            bottom: 20%;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background: #D2B48C;
+        }
+        .sea {
+            position: absolute;
+            bottom: 30%;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: #0000FF;
+            animation: moveSea 3s linear infinite;
+        }
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: skyblue;
+        }
+        .sun {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background: yellow;
+            border-radius: 50%;
+        }
+        .cloud {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            width: 100px;
+            height: 50px;
+            background: white;
+            border-radius: 50px;
+        }
+        .palm-tree {
+            position: absolute;
+            bottom: 20%;
+            left: 10%;
+            width: 20px;
+            height: 100px;
+            background: brown;
+        }
+        .palm-leaves {
+            position: absolute;
+            bottom: 120%;
+            left: -30px;
+            width: 80px;
+            height: 80px;
+            background: green;
+            border-radius: 50%;
+        }
+        .lighthouse {
+            position: absolute;
+            bottom: 20%;
+            right: 10%;
+            width: 20px;
+            height: 100px;
+            background: black;
+        }
+        .lighthouse-light {
+            position: absolute;
+            bottom: 120%;
+            left: -10px;
+            width: 40px;
+            height: 40px;
+            background: yellow;
+            border-radius: 50%;
+        }
+        .pelican {
+            position: absolute;
+            bottom: 20%;
+            left: 30%;
+            width: 100px;
+            height: 100px;
+            animation: movePelican 5s linear infinite;
+        }
+        .pelican-body {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+        }
+        .pelican-neck {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            width: 10px;
+            height: 30px;
+            background: white;
+            transform: rotate(-30deg);
+        }
+        .pelican-beak {
+            position: absolute;
+            top: 20%;
+            left: 60%;
+            width: 30px;
+            height: 10px;
+            background: orange;
+            transform: rotate(-30deg);
+        }
+        .pelican-pouch {
+            position: absolute;
+            top: 25%;
+            left: 65%;
+            width: 20px;
+            height: 10px;
+            background: yellow;
+            border-radius: 50%;
+        }
+        .pelican-eye {
+            position: absolute;
+            top: 45%;
+            left: 55%;
+            width: 5px;
+            height: 5px;
+            background: black;
+            border-radius: 50%;
+        }
+        .pelican-wing {
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            width: 30px;
+            height: 10px;
+            background: white;
+            border-right: 5px solid black;
+            transform: rotate(-30deg);
+        }
+        .pelican-leg {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            width: 10px;
+            height: 20px;
+            background: orange;
+            transform: rotate(30deg);
+            animation: pedal 1s linear infinite;
+        }
+        .bicycle {
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 100px;
+            height: 50px;
+            animation: moveBicycle 5s linear infinite;
+        }
+        .bicycle-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 40px;
+            background: red;
+            transform: rotate(-30deg);
+        }
+        .bicycle-wheel {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: black;
+            border-radius: 50%;
+            animation: rotateWheel 1s linear infinite;
+        }
+        .bicycle-handle {
+            position: absolute;
+            top: 40%;
+            left: 60%;
+            width: 10px;
+            height: 20px;
+            background: black;
+            transform: rotate(-30deg);
+        }
+        .bicycle-pedal {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: black;
+            border-radius: 50%;
+            animation: rotatePedal 1s linear infinite;
+        }
+        @keyframes moveRoad {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes moveSea {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes movePelican {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes moveBicycle {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes rotateWheel {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes rotatePedal {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pedal {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="sky">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+        </div>
+        <div class="sea"></div>
+        <div class="beach"></div>
+        <div class="road">
+            <div class="road-line"></div>
+        </div>
+        <div class="palm-tree">
+            <div class="palm-leaves"></div>
+        </div>
+        <div class="lighthouse">
+            <div class="lighthouse-light"></div>
+        </div>
+        <div class="pelican">
+            <div class="pelican-body"></div>
+            <div class="pelican-neck"></div>
+            <div class="pelican-beak"></div>
+            <div class="pelican-pouch"></div>
+            <div class="pelican-eye"></div>
+            <div class="pelican-wing"></div>
+            <div class="pelican-leg"></div>
+        </div>
+        <div class="bicycle">
+            <div class="bicycle-frame"></div>
+            <div class="bicycle-wheel"></div>
+            <div class="bicycle-handle"></div>
+            <div class="bicycle-pedal"></div>
+        </div>
+    </div>
+</body>
+</html>

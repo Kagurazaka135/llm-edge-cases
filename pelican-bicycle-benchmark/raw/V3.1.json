@@ -1,0 +1,46 @@
+{
+  "id": "gen-1791032763-LJZljcjWmF8klyPCMuOr",
+  "object": "chat.completion",
+  "created": 1791032763,
+  "model": "deepseek/deepseek-chat-v3.1",
+  "provider": "AtlasCloud",
+  "system_fingerprint": null,
+  "service_tier": null,
+  "choices": [
+    {
+      "index": 0,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "message": {
+        "role": "assistant",
+        "content": "```html\n<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>鹈鹕骑行记</title>\n    <style>\n        body, html {\n            margin: 0;\n            padding: 0;\n            height: 100%;\n            overflow: hidden;\n            background: linear-gradient(to bottom, #87CEEB 60%, #1E90FF 100%);\n        }\n        \n        .scene {\n            position: relative;\n            width: 100%;\n            height: 100%;\n        }\n        \n        .road {\n            position: absolute;\n            bottom: 0;\n            width: 200%;\n            height: 25%;\n            background: #555;\n            animation: roadMove 4s linear infinite;\n        }\n        \n        .road-line {\n            position: absolute;\n            top: 50%;\n            width: 100%;\n            height: 10px;\n            background: repeating-linear-gradient(\n                to right,\n                yellow 0%,\n                yellow 10%,\n                transparent 10%,\n                transparent 20%\n            );\n        }\n        \n        .sea {\n            position: absolute;\n            bottom: 25%;\n            width: 100%;\n            height: 15%;\n            background: #1E90FF;\n        }\n        \n        .wave {\n            position: absolute;\n            top: -10px;\n            width: 100%;\n            height: 20px;\n            background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 20\"><path d=\"M0 10 Q25 5 50 10 T100 10 V20 H0 Z\" fill=\"%230077BE\"/></svg>');\n            animation: waveMove 3s linear infinite;\n        }\n        \n        .sun {\n            position: absolute;\n            top: 50px;\n            right: 100px;\n            width: 60px;\n            height: 60px;\n            background: #FFD700;\n            border-radius: 50%;\n            box-shadow: 0 0 40px #FFA500;\n        }\n        \n        .bike {\n            position: absolute;\n            bottom: 25%;\n            left: 30%;\n            transform: translateX(-50%);\n            animation: bikeMove 8s linear infinite;\n        }\n        \n        .frame {\n            position: absolute;\n            width: 200px;\n            height: 100px;\n            border: 10px solid #333;\n            border-radius: 100px 0 0 0 / 50px 0 0 0;\n            border-right: none;\n            border-bottom: none;\n        }\n        \n        .wheel {\n            position: absolute;\n            width: 80px;\n            height: 80px;\n            border: 8px solid #333;\n            border-radius: 50%;\n            background: transparent;\n        }\n        \n        .wheel-front {\n            top: 20px;\n            left: 150px;\n        }\n        \n        .wheel-back {\n            top: 20px;\n            left: 30px;\n        }\n        \n        .spoke {\n            position: absolute;\n            width: 4px;\n            height: 40px;\n            background: #333;\n            top: 20px;\n            left: 38px;\n            transform-origin: center top;\n        }\n        \n        .spoke:nth-child(2) { transform: rotate(60deg); }\n        .spoke:nth-child(3) { transform: rotate(120deg); }\n        .spoke:nth-child(4) { transform: rotate(180deg); }\n        .spoke:nth-child(5) { transform: rotate(240deg); }\n        .spoke:nth-child(6) { transform: rotate(300deg); }\n        \n        .pelican {\n            position: absolute;\n            top: -40px;\n            left: 60px;\n        }\n        \n        .body {\n            width: 60px;\n            height: 40px;\n            background: white;\n            border-radius: 50% 50% 40% 40%;\n        }\n        \n        .beak {\n            position: absolute;\n            top: 15px;\n            left: -20px;\n            width: 30px;\n            height: 15px;\n            background: #FF8C00;\n            border-radius: 50% 0 0 50%;\n        }\n        \n        .pedal {\n            position: absolute;\n            top: 60px;\n            left: 90px;\n            width: 10px;\n            height: 40px;\n            background: #333;\n            transform-origin: center top;\n            animation: pedalRotate 1s linear infinite;\n        }\n        \n        .cloud {\n            position: absolute;\n            background: white;\n            border-radius: 50%;\n            opacity: 0.8;\n        }\n        \n        .cloud1 {\n            top: 80px;\n            left: 10%;\n            width: 60px;\n            height: 30px;\n            animation: cloudMove 20s linear infinite;\n        }\n        \n        .cloud2 {\n            top: 120px;\n            left: 40%;\n            width: 80px;\n            height: 40px;\n            animation: cloudMove 25s linear infinite;\n        }\n        \n        @keyframes roadMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(-50%); }\n        }\n        \n        @keyframes waveMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(-100px); }\n        }\n        \n        @keyframes bikeMove {\n            0% { transform: translateX(-100px); }\n            100% { transform: translateX(calc(100vw + 200px)); }\n        }\n        \n        @keyframes pedalRotate {\n            0% { transform: rotate(0deg); }\n            100% { transform: rotate(360deg); }\n        }\n        \n        @keyframes cloudMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(calc(100vw + 200px)); }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"scene\">\n        <div class=\"sun\"></div>\n        \n        <div class=\"cloud cloud1\"></div>\n        <div class=\"cloud cloud2\"></div>\n        \n        <div class=\"sea\">\n            <div class=\"wave\"></div>\n        </div>\n        \n        <div class=\"road\">\n            <div class=\"road-line\"></div>\n        </div>\n        \n        <div class=\"bike\">\n            <div class=\"frame\"></div>\n            \n            <div class=\"wheel wheel-front\">\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n            </div>\n            \n            <div class=\"wheel wheel-back\">\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n                <div class=\"spoke\"></div>\n            </div>\n            \n            <div class=\"pedal\"></div>\n            \n            <div class=\"pelican\">\n                <div class=\"body\"></div>\n                <div class=\"beak\"></div>\n            </div>\n        </div>\n    </div>\n\n    <script>\n        // 让车轮随踏板转动\n        document.addEventListener('DOMContentLoaded', function() {\n            const wheels = document.querySelectorAll('.wheel');\n            const pedal = document.querySelector('.pedal');\n            \n            function rotateWheels() {\n                wheels.forEach(wheel => {\n                    const currentRotate = wheel.style.transform ?\n                        parseInt(wheel.style.transform.replace('rotate(', '')) : 0;\n                    wheel.style.transform = `rotate(${currentRotate + 10}deg)`;\n                });\n            }\n            \n            setInterval(rotateWheels, 50);\n        });\n    </script>\n</body>\n</html>\n```",
+        "refusal": null,
+        "reasoning": null
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 130,
+    "completion_tokens": 1785,
+    "total_tokens": 1915,
+    "cost": 0.001824,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.001824,
+      "upstream_inference_prompt_cost": 0.000039,
+      "upstream_inference_completions_cost": 0.001785
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  }
+}

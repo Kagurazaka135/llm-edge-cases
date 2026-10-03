@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ҹ - </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #050510;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+        canvas {
+            display: block;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        (function() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const W = 1200;
+            const H = 800;
+
+            let scale = 1;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            function resize() {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                canvas.width = w;
+                canvas.height = h;
+                scale = Math.min(w / W, h / H);
+                offsetX = (w - W * scale) / 2;
+                offsetY = (h - H * scale) / 2;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Ǳ - ˸
+            const stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * W,
+                    y: Math.random() * 290,
+                    r: Math.random() * 1.8 + 0.4,
+                    speed: Math.random() * 2.8 + 0.6,
+                    phase: Math.random() * Math.PI * 2,
+                    baseAlpha: Math.random() * 0.55 + 0.4
+                });
+            }
+
+            const startTime = performance.now();
+
+            // ==================== ƺ ====================
+
+            function drawSky(time) {
+                const skyGrad = ctx.createLinearGradient(0, 0, 0, 340);
+                skyGrad.addColorStop(0, '#060615');
+                skyGrad.addColorStop(0.4, '#0d0d28');
+                skyGrad.addColorStop(0.75, '#141435');
+                skyGrad.addColorStop(1, '#1a1a3d');
+                ctx.fillStyle = skyGrad;
+                ctx.fillRect(0, 0, W, 340);
+            }
+
+            function drawStars(time) {
+                for (const star of stars) {
+                    const twinkle = 0.55 + 0.45 * Math.sin(time * star.speed + star.phase);
+                    const alpha = star.baseAlpha * twinkle;
+                    ctx.fillStyle = `rgba(255, 250, 235, ${alpha.toFixed(3)})`;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                // ż
+                if (Math.random() < 0.03) {
+                    const sx = Math.random() * W;
+                    const sy = Math.random() * 200;
+                    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function drawHorizon(time) {
+                // Զɽ/ƽ
+                ctx.fillStyle = '#101025';
+                ctx.beginPath();
+                ctx.moveTo(0, 335);
+                for (let x = 0; x <= W; x += 30) {
+                    const y = 322 + Math.sin(x * 0.004 + 1.2) * 9 + Math.sin(x * 0.011 + 0.5) * 6;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(W, 350);
+                ctx.lineTo(0, 350);
+                ctx.closePath();
+                ctx.fill();
+
+                // ڶɽ
+                ctx.fillStyle = '#151530';
+                ctx.beginPath();
+                ctx.moveTo(0, 328);
+                for (let x = 0; x <= W; x += 25) {
+                    const y = 318 + Math.sin(x * 0.006 + 2.5) * 7 + Math.sin(x * 0.014 + 1.8) * 5;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(W, 342);
+                ctx.lineTo(0, 342);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            function drawSea(time) {
+                const seaGrad = ctx.createLinearGradient(0, 335, 0, 520);
+                seaGrad.addColorStop(0, '#0a1628');
+                seaGrad.addColorStop(0.3, '#0d1e35');
+                seaGrad.addColorStop(0.7, '#0f2542');
+                seaGrad.addColorStop(1, '#142a45');
+                ctx.fillStyle = seaGrad;
+                ctx.fillRect(0, 335, W, 185);
+
+                // 
+                ctx.strokeStyle = 'rgba(180,200,220,0.05)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 14; i++) {
+                    const baseY = 342 + i * 13;
+                    ctx.beginPath();
+                    for (let x = 0; x < W; x += 8) {
+                        const y = baseY + Math.sin(time * 1.3 + x * 0.018 + i * 0.6) * 4.5;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
+
+                // ·Ƶӳ
+                const reflGrad = ctx.createLinearGradient(0, 345, 0, 490);
+                reflGrad.addColorStop(0, 'rgba(255,200,120,0.07)');
+                reflGrad.addColorStop(0.5, 'rgba(255,180,100,0.03)');
+                reflGrad.addColorStop(1, 'rgba(255,150,80,0)');
+                ctx.fillStyle = reflGrad;
+                ctx.beginPath();
+                const reflCX = 850;
+                ctx.moveTo(reflCX - 70, 345);
+                ctx.quadraticCurveTo(reflCX, 430, reflCX - 25, 490);
+                ctx.lineTo(reflCX + 25, 490);
+                ctx.quadraticCurveTo(reflCX, 430, reflCX + 70, 345);
+                ctx.fill();
+            }
+
+            function drawShore(time) {
+                const shoreGrad = ctx.createLinearGradient(0, 505, 0, 555);
+                shoreGrad.addColorStop(0, '#283040');
+                shoreGrad.addColorStop(0.4, '#353835');
+                shoreGrad.addColorStop(1, '#424238');
+                ctx.fillStyle = shoreGrad;
+                ctx.fillRect(0, 505, W, 50);
+            }
+
+            function drawRoad(time) {
+                // ·
+                const roadGrad = ctx.createLinearGradient(0, 548, 0, 700);
+                roadGrad.addColorStop(0, '#3d3d3d');
+                roadGrad.addColorStop(0.15, '#383838');
+                roadGrad.addColorStop(1, '#2a2a2a');
+                ctx.fillStyle = roadGrad;
+                ctx.fillRect(0, 548, W, 152);
+
+                // ·
+                ctx.fillStyle = '#4e4e4e';
+                ctx.fillRect(0, 546, W, 5);
+                ctx.fillStyle = '#5c5c5c';
+                ctx.fillRect(0, 695, W, 5);
+
+                // ·
+                ctx.strokeStyle = '#d0d0d0';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([32, 22]);
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(0, 621);
+                ctx.lineTo(W, 621);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.lineCap = 'butt';
+            }
+
+            function drawLampPost(x, baseY, time) {
+                const baseX = x;
+                const poleBottom = baseY;
+                const poleTop = baseY - 260;
+
+                // 
+                ctx.fillStyle = '#3d3d3d';
+                ctx.beginPath();
+                ctx.roundRect(baseX - 13, poleBottom - 9, 26, 10, 3);
+                ctx.fill();
+                ctx.fillStyle = '#505050';
+                ctx.beginPath();
+                ctx.roundRect(baseX - 11, poleBottom - 11, 22, 4, 2);
+                ctx.fill();
+
+                // Ƹ
+                ctx.strokeStyle = '#5e5e5e';
+                ctx.lineWidth = 7;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(baseX, poleBottom);
+                ctx.lineTo(baseX, poleTop);
+                ctx.stroke();
+
+                // Ƹ˼ӹ̻
+                ctx.strokeStyle = '#6e6e6e';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(baseX - 4, poleBottom - 25);
+                ctx.lineTo(baseX + 4, poleBottom - 25);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(baseX - 3, poleBottom - 50);
+                ctx.lineTo(baseX + 3, poleBottom - 50);
+                ctx.stroke();
+
+                // Ʊ
+                const armStartY = poleTop + 25;
+                const armEndX = baseX - 65;
+                const armEndY = poleTop - 8;
+                ctx.strokeStyle = '#5a5a5a';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(baseX, armStartY);
+                ctx.quadraticCurveTo(baseX - 25, armStartY - 15, armEndX, armEndY);
+                ctx.stroke();
+
+                // ƾ
+                const lampX = armEndX;
+                const lampY = armEndY;
+                ctx.fillStyle = '#3a3a3a';
+                ctx.beginPath();
+                ctx.moveTo(lampX - 16, lampY);
+                ctx.lineTo(lampX + 16, lampY);
+                ctx.lineTo(lampX + 11, lampY + 18);
+                ctx.lineTo(lampX - 11, lampY + 18);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // ƹâ（）
+                const glowGrad1 = ctx.createRadialGradient(lampX, lampY + 10, 8, lampX, lampY + 10, 160);
+                glowGrad1.addColorStop(0, 'rgba(255,245,210,0.55)');
+                glowGrad1.addColorStop(0.2, 'rgba(255,225,160,0.3)');
+                glowGrad1.addColorStop(0.5, 'rgba(255,190,110,0.08)');
+                glowGrad1.addColorStop(1, 'rgba(255,160,60,0)');
+                ctx.fillStyle = glowGrad1;
+                ctx.beginPath();
+                ctx.arc(lampX, lampY + 10, 160, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ƹĸǿ
+                const glowGrad2 = ctx.createRadialGradient(lampX, lampY + 10, 0, lampX, lampY + 10, 35);
+                glowGrad2.addColorStop(0, 'rgba(255,255,240,0.75)');
+                glowGrad2.addColorStop(0.4, 'rgba(255,245,210,0.35)');
+                glowGrad2.addColorStop(1, 'rgba(255,210,120,0)');
+                ctx.fillStyle = glowGrad2;
+                ctx.beginPath();
+                ctx.arc(lampX, lampY + 10, 35, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ϵĹ
+                ctx.save();
+                ctx.globalAlpha = 0.22;
+                const groundGlow = ctx.createRadialGradient(lampX, baseY, 8, lampX, baseY, 110);
+                groundGlow.addColorStop(0, 'rgba(255,225,160,0.7)');
+                groundGlow.addColorStop(0.4, 'rgba(255,190,110,0.25)');
+                groundGlow.addColorStop(1, 'rgba(255,150,50,0)');
+                ctx.fillStyle = groundGlow;
+                ctx.beginPath();
+                ctx.ellipse(lampX, baseY, 110, 28, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                return { lampX, lampY: lampY + 10, baseY, baseX };
+            }
+
+            function drawCar(x, y, time) {
+                const carW = 55;
+                const carH = 24;
+                ctx.save();
+                ctx.translate(x, y);
+
+                // Ӱ
+                ctx.fillStyle = 'rgba(0,0,0,0.45)';
+                ctx.beginPath();
+                ctx.ellipse(0, 9, carW / 2 + 6, 7, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 
+                const bodyGrad = ctx.createLinearGradient(0, -carH, 0, 0);
+                bodyGrad.addColorStop(0, '#3a4a5a');
+                bodyGrad.addColorStop(1, '#1a2a3a');
+                ctx.fillStyle = bodyGrad;
+                ctx.beginPath();
+                ctx.roundRect(-carW / 2, -carH, carW, carH, 6);
+                ctx.fill();
+                ctx.strokeStyle = '#4a5a6a';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // 
+                ctx.fillStyle = '#1e2e3e';
+                ctx.beginPath();
+                ctx.roundRect(-carW / 2 + 10, -carH - 9, carW - 20, 11, 5);
+                ctx.fill();
+
+                // 
+                ctx.fillStyle = 'rgba(160,190,210,0.55)';
+                ctx.beginPath();
+                ctx.roundRect(-carW / 2 + 13, -carH - 7, carW / 2 - 8, 7, 3);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.roundRect(carW / 2 - carW / 2 - 5, -carH - 7, carW / 2 - 10, 7, 3);
+                ctx.fill();
+
+                // ǰƣɫ
+                ctx.fillStyle = 'rgba(255,255,210,0.85)';
+                ctx.beginPath();
+                ctx.arc(carW / 2 - 6, -carH / 2, 4, 0, Math.PI * 2);
+                ctx.fill();
+                // βƣɫ
+                ctx.fillStyle = 'rgba(255,80,40,0.85)';
+                ctx.beginPath();
+                ctx.arc(-carW / 2 + 6, -carH / 2, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ǰƹ
+                ctx.fillStyle = 'rgba(255,250,210,0.18)';
+                ctx.beginPath();
+                ctx.moveTo(carW / 2, -carH / 2);
+                ctx.lineTo(carW / 2 + 45, -carH / 2 - 14);
+                ctx.lineTo(carW / 2 + 45, -carH / 2 + 14);
+                ctx.closePath();
+                ctx.fill();
+
+                // 
+                ctx.fillStyle = '#111';
+                ctx.beginPath();
+                ctx.arc(-carW / 3.2, carH / 2 - 1, 9, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(carW / 3.2, carH / 2 - 1, 9, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#3a3a3a';
+                ctx.beginPath();
+                ctx.arc(-carW / 3.2, carH / 2 - 1, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(carW / 3.2, carH / 2 - 1, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function drawBicycle(bikeX, bikeY, time) {
+                const pedalAngle = time * 12.5;
+                const wheelAngle = time * 8.2;
+
+                const frontWheelCX = bikeX - 88;
+                const frontWheelCY = bikeY - 36;
+                const rearWheelCX = bikeX + 88;
+                const rearWheelCY = bikeY - 36;
+                const wheelR = 36;
+
+                const headTubeTopX = bikeX - 118;
+                const headTubeTopY = bikeY - 76;
+                const headTubeBottomX = bikeX - 108;
+                const headTubeBottomY = bikeY - 50;
+
+                const seatTubeTopX = bikeX + 38;
+                const seatTubeTopY = bikeY - 68;
+                const seatTubeBottomX = bikeX + 28;
+                const seatTubeBottomY = bikeY - 4;
+
+                const crankCenterX = seatTubeBottomX;
+                const crankCenterY = seatTubeBottomY;
+                const crankR = 13;
+                const crankArmLen = 21;
+
+                const leftPedalAngle = pedalAngle;
+                const rightPedalAngle = pedalAngle + Math.PI;
+                const leftPedalX = crankCenterX + crankArmLen * Math.cos(leftPedalAngle);
+                const leftPedalY = crankCenterY + crankArmLen * Math.sin(leftPedalAngle);
+                const rightPedalX = crankCenterX + crankArmLen * Math.cos(rightPedalAngle);
+                const rightPedalY = crankCenterY + crankArmLen * Math.sin(rightPedalAngle);
+
+                // Ƴ
+                function drawWheel(cx, cy, r, angle) {
+                    // ̥
+                    ctx.strokeStyle = '#1a1a1a';
+                    ctx.lineWidth = 7;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // Ȧ
+                    ctx.strokeStyle = '#b8b8b8';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r - 4.5, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // 
+                    ctx.fillStyle = '#909090';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 5.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ccc';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 2.8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // ˿
+                    const spokeCount = 20;
+                    ctx.strokeStyle = '#a0a0a0';
+                    ctx.lineWidth = 0.7;
+                    for (let i = 0; i < spokeCount; i++) {
+                        const a = angle + (i / spokeCount) * Math.PI * 2;
+                        const innerR = 5.5;
+                        const outerR = r - 5.5;
+                        ctx.beginPath();
+                        ctx.moveTo(cx + innerR * Math.cos(a), cy + innerR * Math.sin(a));
+                        ctx.lineTo(cx + outerR * Math.cos(a), cy + outerR * Math.sin(a));
+                        ctx.stroke();
+                    }
+                }
+
+                drawWheel(frontWheelCX, frontWheelCY, wheelR, wheelAngle);
+                drawWheel(rearWheelCX, rearWheelCY, wheelR, wheelAngle);
+
+                // Ǽ
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                // ¹ (down tube)
+                ctx.strokeStyle = '#c0392b';
+                ctx.lineWidth = 7;
+                ctx.beginPath();
+                ctx.moveTo(headTubeBottomX, headTubeBottomY);
+                ctx.lineTo(seatTubeBottomX, seatTubeBottomY);
+                ctx.stroke();
+
+                // Ϲ (top tube)
+                ctx.strokeStyle = '#d4453a';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(headTubeTopX, headTubeTopY);
+                ctx.lineTo(seatTubeTopX, seatTubeTopY);
+                ctx.stroke();
+
+                //  (seat tube)
+                ctx.strokeStyle = '#b8352e';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(seatTubeTopX, seatTubeTopY);
+                ctx.lineTo(seatTubeBottomX, seatTubeBottomY);
+                ctx.stroke();
+
+                // ² (chain stay)
+                ctx.strokeStyle = '#a8322a';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(seatTubeBottomX, seatTubeBottomY);
+                ctx.lineTo(rearWheelCX, rearWheelCY);
+                ctx.stroke();
+
+                // ϲ (seat stay)
+                ctx.strokeStyle = '#b8352e';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(seatTubeTopX, seatTubeTopY);
+                ctx.lineTo(rearWheelCX, rearWheelCY);
+                ctx.stroke();
+
+                // ǰ (fork)
+                ctx.strokeStyle = '#8a8a8a';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(headTubeBottomX, headTubeBottomY);
+                ctx.lineTo(frontWheelCX, frontWheelCY);
+                ctx.stroke();
+
+                // ǰ泵
+                ctx.strokeStyle = '#7a7a7a';
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.moveTo(headTubeTopX, headTubeTopY);
+                ctx.lineTo(headTubeBottomX, headTubeBottomY);
+                ctx.stroke();
+
+                // 
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 5;
+                const hbarCX = headTubeTopX;
+                const hbarCY = headTubeTopY - 5;
+                ctx.beginPath();
+                ctx.arc(hbarCX, hbarCY, 13, -Math.PI * 0.75, Math.PI * 0.25);
+                ctx.stroke();
+                // ֱ
+                ctx.fillStyle = '#333';
+                ctx.beginPath();
+                ctx.arc(hbarCX - 10, hbarCY + 8, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(hbarCX + 8, hbarCY + 6, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ѹ
+                ctx.strokeStyle = '#6a6a6a';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(seatTubeTopX, seatTubeTopY - 4);
+                ctx.lineTo(seatTubeTopX, seatTubeTopY - 20);
+                ctx.stroke();
+
+                // 
+                const seatY = seatTubeTopY - 22;
+                ctx.fillStyle = '#5d3818';
+                ctx.beginPath();
+                ctx.ellipse(seatTubeTopX, seatY, 17, 7, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#3a1e08';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                // Ѹ߹
+                ctx.fillStyle = '#7a4a25';
+                ctx.beginPath();
+                ctx.ellipse(seatTubeTopX, seatY - 2, 14, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                //  (chainring)
+                const chainringGrad = ctx.createRadialGradient(crankCenterX, crankCenterY, 3, crankCenterX, crankCenterY,
+                    crankR);
+                chainringGrad.addColorStop(0, '#555');
+                chainringGrad.addColorStop(1, '#2a2a2a');
+                ctx.fillStyle = chainringGrad;
+                ctx.beginPath();
+                ctx.arc(crankCenterX, crankCenterY, crankR, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#666';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(crankCenterX, crankCenterY, crankR, 0, Math.PI * 2);
+                ctx.stroke();
+                // 
+                ctx.fillStyle = '#444';
+                ctx.beginPath();
+                ctx.arc(crankCenterX, crankCenterY, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                //  (chain)
+                ctx.strokeStyle = '#5a5a5a';
+                ctx.lineWidth = 1.8;
+                ctx.setLineDash([4, 3]);
+                const rearGearR = 7;
+                ctx.beginPath();
+                ctx.moveTo(crankCenterX + crankR, crankCenterY);
+                ctx.lineTo(rearWheelCX + rearGearR, rearWheelCY);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(crankCenterX - crankR, crankCenterY);
+                ctx.lineTo(rearWheelCX - rearGearR, rearWheelCY);
+                ctx.stroke();
+                // 
+                ctx.beginPath();
+                ctx.moveTo(crankCenterX, crankCenterY + crankR);
+                ctx.lineTo(rearWheelCX, rearWheelCY + rearGearR);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // ̤˺ͽ̤
+                function drawCrankArm(sx, sy, ex, ey) {
+                    ctx.strokeStyle = '#6e6e6e';
+                    ctx.lineWidth = 5.5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(ex, ey);
+                    ctx.stroke();
+                    // ǿ
+                    ctx.strokeStyle = '#7a7a7a';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(ex, ey);
+                    ctx.stroke();
+                }
+
+                function drawPedal(px, py) {
+                    ctx.fillStyle = '#4a4a4a';
+                    ctx.fillRect(px - 11, py - 3.5, 22, 7);
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 1.2;
+                    ctx.strokeRect(px - 11, py - 3.5, 22, 7);
+                    // 
+                    ctx.fillStyle = '#555';
+                    ctx.fillRect(px - 8, py - 2, 16, 3);
+                }
+
+                drawCrankArm(crankCenterX, crankCenterY, leftPedalX, leftPedalY);
+                drawPedal(leftPedalX, leftPedalY);
+                drawCrankArm(crankCenterX, crankCenterY, rightPedalX, rightPedalY);
+                drawPedal(rightPedalX, rightPedalY);
+
+                return {
+                    seatX: seatTubeTopX,
+                    seatY: seatY,
+                    handleX: hbarCX,
+                    handleY: hbarCY,
+                    leftPedalX,
+                    leftPedalY,
+                    rightPedalX,
+                    rightPedalY,
+                    headTubeTopX,
+                    headTubeTopY
+                };
+            }
+
+            function calculateKnee(hipX, hipY, ankleX, ankleY, thighLen, shinLen, direction) {
+                const dx = ankleX - hipX;
+                const dy = ankleY - hipY;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                const midX = (hipX + ankleX) / 2;
+                const midY = (hipY + ankleY) / 2;
+                const halfD = d / 2;
+                let offset = Math.sqrt(Math.max(thighLen * thighLen - halfD * halfD, 0));
+                if (d > thighLen + shinLen) offset = 0;
+                if (d < 0.001) return { x: midX, y: midY };
+                const perpX = -dy / d * offset * direction;
+                const perpY = dx / d * offset * direction;
+                return { x: midX + perpX, y: midY + perpY };
+            }
+
+            function drawRider(seatX, seatY, handleX, handleY, leftPX, leftPY, rightPX, rightPY, time) {
+                const hipX = seatX + 6;
+                const hipY = seatY - 6;
+
+                // ͷ
+                const headCX = hipX + 6;
+                const headCY = hipY - 48;
+
+                // ͷ
+                const skinGrad = ctx.createRadialGradient(headCX - 2, headCY - 2, 2, headCX, headCY, 15);
+                skinGrad.addColorStop(0, '#ffe0c0');
+                skinGrad.addColorStop(0.7, '#e8b890');
+                skinGrad.addColorStop(1, '#c89570');
+                ctx.fillStyle = skinGrad;
+                ctx.beginPath();
+                ctx.arc(headCX, headCY, 14, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#b88060';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // ͷ
+                ctx.fillStyle = '#1e2e3e';
+                ctx.beginPath();
+                ctx.arc(headCX, headCY - 9, 16, Math.PI, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(headCX - 16, headCY - 9, 32, 6);
+                // ñ
+                ctx.fillStyle = '#2a3a4a';
+                ctx.beginPath();
+                ctx.arc(headCX, headCY - 11, 17, Math.PI * 0.15, Math.PI * 0.85);
+                ctx.fill();
+
+                // 
+                const bodyGrad = ctx.createLinearGradient(hipX, hipY - 35, hipX, hipY);
+                bodyGrad.addColorStop(0, '#3a4a5a');
+                bodyGrad.addColorStop(1, '#2a3a4a');
+                ctx.strokeStyle = bodyGrad;
+                ctx.lineWidth = 11;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(hipX + 3, hipY);
+                ctx.lineTo(hipX + 8, hipY - 32);
+                ctx.stroke();
+
+                // ֱ - ϱ
+                ctx.strokeStyle = '#3e4e5e';
+                ctx.lineWidth = 6.5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(hipX + 6, hipY - 27);
+                ctx.lineTo(handleX + 2, handleY + 8);
+                ctx.stroke();
+                // ǰ
+                ctx.strokeStyle = '#4a5a6a';
+                ctx.lineWidth = 5.5;
+                ctx.beginPath();
+                ctx.moveTo(handleX + 2, handleY + 8);
+                ctx.lineTo(handleX - 10, handleY + 16);
+                ctx.stroke();
+                // 
+                ctx.fillStyle = '#e8b890';
+                ctx.beginPath();
+                ctx.arc(handleX - 10, handleY + 16, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Ȳ
+                function drawLeg(hx, hy, px, py, side) {
+                    const knee = calculateKnee(hx, hy, px, py, 33, 33, side);
+
+                    // 
+                    ctx.strokeStyle = '#334455';
+                    ctx.lineWidth = 9.5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(hx, hy);
+                    ctx.lineTo(knee.x, knee.y);
+                    ctx.stroke();
+
+                    // С
+                    ctx.strokeStyle = '#3e5060';
+                    ctx.lineWidth = 7.5;
+                    ctx.beginPath();
+                    ctx.moveTo(knee.x, knee.y);
+                    ctx.lineTo(px, py);
+                    ctx.stroke();
+
+                    // ϥ
+                    ctx.fillStyle = '#3a4a5a';
+                    ctx.beginPath();
+                    ctx.arc(knee.x, knee.y, 5.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#2a3a4a';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Ь
+                    ctx.fillStyle = '#1a1a1a';
+                    ctx.save();
+                    ctx.translate(px, py);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 2, 9, 5, 0.05, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    // Ьϸ
+                    ctx.fillStyle = '#2a2a2a';
+                    ctx.beginPath();
+                    ctx.arc(0, -1, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // ȣleftPedal = ࣩ
+                drawLeg(hipX, hipY, leftPX, leftPY, 1);
+                // ԶȣrightPedal = Զࣩ
+                drawLeg(hipX, hipY, rightPX, rightPY, -1);
+            }
+
+            function drawBushes(time) {
+                const bushData = [
+                    { x: 140, y: 543, s: 1.0 },
+                    { x: 310, y: 540, s: 1.2 },
+                    { x: 920, y: 542, s: 0.9 },
+                    { x: 1060, y: 544, s: 1.1 },
+                    { x: 70, y: 546, s: 0.8 },
+                    { x: 1140, y: 543, s: 1.0 },
+                    { x: 480, y: 541, s: 0.7 },
+                    { x: 750, y: 544, s: 0.85 },
+                ];
+
+                for (const b of bushData) {
+                    const s = b.s;
+                    ctx.fillStyle = '#1a3520';
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, 13 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x - 9 * s, b.y + 3 * s, 10 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + 9 * s, b.y + 3 * s, 10 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#254530';
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y - 4 * s, 9 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#305a38';
+                    ctx.beginPath();
+                    ctx.arc(b.x + 2 * s, b.y - 5 * s, 5 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // ==================== ѭ ====================
+            function animate(timestamp) {
+                const time = (timestamp - startTime) / 1000;
+
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+
+                // ƾӺǰ
+                drawSky(time);
+                drawStars(time);
+                drawHorizon(time);
+                drawSea(time);
+                drawShore(time);
+                drawRoad(time);
+                drawBushes(time);
+
+                // Զ·
+                drawLampPost(180, 546, time);
+                drawLampPost(380, 546, time);
+
+                // ·
+                const carSpeed = 75;
+                const carX = ((time * carSpeed) % (W + 350)) - 175;
+                drawCar(carX, 618, time);
+                // ڶ·
+                const car2X = ((time * carSpeed * 0.7 + 600) % (W + 350)) - 175;
+                drawCar(car2X, 616, time);
+
+                // ·
+                drawLampPost(850, 546, time);
+                drawLampPost(1080, 546, time);
+
+                // гӰ
+                const bikeX = 590;
+                const bikeY = 600;
+                ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                ctx.beginPath();
+                ctx.ellipse(bikeX, bikeY + 6, 105, 9, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ƳǼܺͳ
+                const bikeParts = drawBicycle(bikeX, bikeY, time);
+
+                // Ƴ
+                drawRider(
+                    bikeParts.seatX, bikeParts.seatY,
+                    bikeParts.handleX, bikeParts.handleY,
+                    bikeParts.leftPedalX, bikeParts.leftPedalY,
+                    bikeParts.rightPedalX, bikeParts.rightPedalY,
+                    time
+                );
+
+                // ǰ·ʯͷ
+                ctx.fillStyle = '#3d3d3d';
+                ctx.beginPath();
+                ctx.ellipse(410, 553, 16, 7, 0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#4e4e4e';
+                ctx.beginPath();
+                ctx.ellipse(412, 551, 12, 5, 0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#3a3a3a';
+                ctx.beginPath();
+                ctx.ellipse(700, 555, 10, 5, -0.05, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ǰС
+                ctx.fillStyle = 'rgba(255,255,255,0.06)';
+                ctx.beginPath();
+                ctx.arc(500, 555, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(680, 558, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                requestAnimationFrame(animate);
+            }
+
+            // roundRect polyfill
+            if (!ctx.roundRect) {
+                ctx.roundRect = function(x, y, w, h, r) {
+                    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+                    ctx.beginPath();
+                    ctx.moveTo(x + r.tl, y);
+                    ctx.lineTo(x + w - r.tr, y);
+                    ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+                    ctx.lineTo(x + w, y + h - r.br);
+                    ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+                    ctx.lineTo(x + r.bl, y + h);
+                    ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+                    ctx.lineTo(x, y + r.tl);
+                    ctx.quadraticCurveTo(x, y, x + r.tl, y);
+                    ctx.closePath();
+                };
+            }
+
+            // 
+            requestAnimationFrame(animate);
+        })();
+    </script>
+</body>
+</html>

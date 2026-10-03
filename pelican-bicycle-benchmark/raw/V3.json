@@ -1,0 +1,46 @@
+{
+  "id": "gen-1791032763-cPU3Yd4lFinQMFzilH9D",
+  "object": "chat.completion",
+  "created": 1791032763,
+  "model": "deepseek/deepseek-chat",
+  "provider": "DeepInfra",
+  "system_fingerprint": null,
+  "service_tier": "default",
+  "choices": [
+    {
+      "index": 0,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "message": {
+        "role": "assistant",
+        "content": "```html\n<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>鹈鹕骑车动画</title>\n    <style>\n        body, html {\n            margin: 0;\n            padding: 0;\n            height: 100%;\n            overflow: hidden;\n            background: linear-gradient(to bottom, #87CEEB 50%, #4682B4 100%);\n        }\n        .scene {\n            position: relative;\n            width: 100%;\n            height: 100%;\n        }\n        .road {\n            position: absolute;\n            bottom: 0;\n            width: 100%;\n            height: 100px;\n            background: #808080;\n        }\n        .sea {\n            position: absolute;\n            bottom: 100px;\n            width: 100%;\n            height: 150px;\n            background: #00BFFF;\n        }\n        .pelican {\n            position: absolute;\n            bottom: 150px;\n            left: 50%;\n            width: 100px;\n            height: 100px;\n            animation: ride 5s linear infinite;\n        }\n        .pelican-body {\n            width: 100%;\n            height: 100%;\n            background: #FFD700;\n            border-radius: 50%;\n        }\n        .pelican-wheel {\n            position: absolute;\n            bottom: -20px;\n            width: 40px;\n            height: 40px;\n            background: #000;\n            border-radius: 50%;\n            animation: spin 1s linear infinite;\n        }\n        .pelican-wheel.left {\n            left: 10px;\n        }\n        .pelican-wheel.right {\n            right: 10px;\n        }\n        @keyframes ride {\n            0% { transform: translateX(-50%); }\n            100% { transform: translateX(50%); }\n        }\n        @keyframes spin {\n            0% { transform: rotate(0deg); }\n            100% { transform: rotate(360deg); }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"scene\">\n        <div class=\"sea\"></div>\n        <div class=\"road\"></div>\n        <div class=\"pelican\">\n            <div class=\"pelican-body\"></div>\n            <div class=\"pelican-wheel left\"></div>\n            <div class=\"pelican-wheel right\"></div>\n        </div>\n    </div>\n</body>\n</html>\n```",
+        "refusal": null,
+        "reasoning": null
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 128,
+    "completion_tokens": 527,
+    "total_tokens": 655,
+    "cost": 0.00050999,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.00050999,
+      "upstream_inference_prompt_cost": 0.00004096,
+      "upstream_inference_completions_cost": 0.00046903
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  }
+}

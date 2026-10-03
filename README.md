@@ -18,6 +18,7 @@ Contents
 
 - Concurrency Limits Are Layered
 - Jacobian Conjecture Probe (knowledge-cutoff wall + long-CoT black hole) → [`jacobian-conjecture-probe/`](jacobian-conjecture-probe/)
+- Pelican Bicycle Benchmark (capability ≠ compliance: who actually draws the pelican) → [`pelican-bicycle-benchmark/`](pelican-bicycle-benchmark/)
 ---
 
 Motivation

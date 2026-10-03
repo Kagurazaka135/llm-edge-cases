@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鹈鹕骑车动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(to bottom, #87CEEB 60%, #F0E68C 60%, #F0E68C 65%, #4682B4 65%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+        }
+        /* 天空元素 */
+        .sun {
+            position: absolute;
+            top: 20px;
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFD700, #FF8C00);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #FFA500;
+        }
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            animation: cloudMove 60s linear infinite;
+        }
+        .cloud:nth-child(2) {
+            top: 40px;
+            left: 10%;
+            width: 80px;
+            height: 40px;
+            animation-delay: -10s;
+        }
+        .cloud:nth-child(3) {
+            top: 70px;
+            left: 30%;
+            width: 100px;
+            height: 50px;
+            animation-delay: -25s;
+        }
+        /* 海水 */
+        .sea {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 35%;
+            background: #4682B4;
+        }
+        .wave {
+            position: absolute;
+            bottom: 100%;
+            width: 100%;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 40"><path d="M0,20 Q300,0 600,20 T1200,20" fill="none" stroke="%23336699" stroke-width="5"/></svg>') repeat-x;
+            animation: waveMove 4s linear infinite;
+        }
+        /* 道路 */
+        .road {
+            position: absolute;
+            bottom: 35%;
+            width: 100%;
+            height: 80px;
+            background: #696969;
+        }
+        .road-line {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 6px;
+            background: repeating-linear-gradient(to right, white 0, white 20px, transparent 20px, transparent 40px);
+            animation: roadMove 1s linear infinite;
+        }
+        /* 鹈鹕自行车 */
+        .bicycle-container {
+            position: absolute;
+            bottom: 65%;
+            left: 30%;
+            animation: bikeMove 8s linear infinite;
+        }
+        .bicycle {
+            position: relative;
+            width: 200px;
+            height: 120px;
+        }
+        /* 车轮 */
+        .wheel {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 8px solid #333;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 60%, #222 60%);
+            bottom: 0;
+            animation: wheelRotate 0.5s linear infinite;
+        }
+        .front-wheel {
+            left: 140px;
+        }
+        .rear-wheel {
+            left: 10px;
+        }
+        .wheel-spoke {
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: #333;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        .wheel-spoke:nth-child(2) {
+            transform: translateX(-50%) rotate(60deg);
+        }
+        .wheel-spoke:nth-child(3) {
+            transform: translateX(-50%) rotate(120deg);
+        }
+        /* 车架 */
+        .frame {
+            position: absolute;
+            background: #8B4513;
+            border-radius: 2px;
+        }
+        .frame-1 {
+            width: 120px;
+            height: 8px;
+            left: 35px;
+            top: 40px;
+            transform: rotate(15deg);
+        }
+        .frame-2 {
+            width: 80px;
+            height: 8px;
+            left: 35px;
+            top: 40px;
+            transform: rotate(-45deg);
+        }
+        .frame-3 {
+            width: 90px;
+            height: 8px;
+            left: 110px;
+            top: 40px;
+            transform: rotate(-10deg);
+        }
+        /* 鹈鹕 */
+        .pelican {
+            position: absolute;
+            left: 60px;
+            top: 10px;
+            width: 80px;
+            height: 50px;
+        }
+        .pelican-body {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50% 50% 40% 40%;
+        }
+        .pelican-beak {
+            position: absolute;
+            left: 100%;
+            top: 15px;
+            width: 30px;
+            height: 15px;
+            background: #FFA500;
+            border-radius: 0 50% 50% 0;
+            transform-origin: left center;
+            animation: beakMove 0.3s alternate infinite;
+        }
+        .pelican-wing {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            width: 40px;
+            height: 25px;
+            background: white;
+            border-radius: 50%;
+            transform-origin: left center;
+            animation: wingFlap 0.4s ease-in-out infinite alternate;
+        }
+        /* 踏板动画 */
+        .pedal {
+            position: absolute;
+            left: 70px;
+            top: 75px;
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border-radius: 50%;
+            animation: pedalRotate 0.5s linear infinite;
+        }
+        /* 动画定义 */
+        @keyframes cloudMove {
+            from { transform: translateX(-100px); }
+            to { transform: translateX(120vw); }
+        }
+        @keyframes waveMove {
+            from { background-position-x: 0; }
+            to { background-position-x: 1200px; }
+        }
+        @keyframes roadMove {
+            from { background-position-x: 0; }
+            to { background-position-x: 40px; }
+        }
+        @keyframes bikeMove {
+            0% { transform: translateX(-30%); }
+            100% { transform: translateX(130%); }
+        }
+        @keyframes wheelRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes beakMove {
+            from { transform: scaleY(1); }
+            to { transform: scaleY(0.8); }
+        }
+        @keyframes wingFlap {
+            from { transform: rotate(-10deg); }
+            to { transform: rotate(10deg); }
+        }
+        @keyframes pedalRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="sun"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        
+        <div class="sea">
+            <div class="wave"></div>
+        </div>
+        
+        <div class="road">
+            <div class="road-line"></div>
+        </div>
+        
+        <div class="bicycle-container">
+            <div class="bicycle">
+                <!-- 车轮 -->
+                <div class="wheel front-wheel">
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                </div>
+                <div class="wheel rear-wheel">
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                </div>
+                <!-- 车架 -->
+                <div class="frame frame-1"></div>
+                <div class="frame frame-2"></div>
+                <div class="frame frame-3"></div>
+                <!-- 鹈鹕 -->
+                <div class="pelican">
+                    <div class="pelican-body"></div>
+                    <div class="pelican-beak"></div>
+                    <div class="pelican-wing"></div>
+                </div>
+                <!-- 踏板 -->
+                <div class="pedal"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

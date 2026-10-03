@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鹈鹕骑自行车动画</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #scene {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            overflow: hidden;
+        }
+        #sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to bottom, #87CEEB 0%, #B0E2FF 100%);
+        }
+        #sun {
+            position: absolute;
+            top: 30px;
+            right: 80px;
+            width: 50px;
+            height: 50px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 30px #FFA500;
+        }
+        .cloud {
+            position: absolute;
+            background-color: white;
+            border-radius: 50px;
+        }
+        .cloud:nth-child(1) {
+            top: 50px;
+            left: 100px;
+            width: 80px;
+            height: 40px;
+        }
+        .cloud:nth-child(2) {
+            top: 80px;
+            left: 300px;
+            width: 100px;
+            height: 50px;
+        }
+        .cloud:nth-child(3) {
+            top: 40px;
+            left: 500px;
+            width: 70px;
+            height: 35px;
+        }
+        #sea {
+            position: absolute;
+            bottom: 100px;
+            left: 0;
+            width: 200%;
+            height: 25%;
+            background-color: #1E90FF;
+            animation: waveScroll 20s linear infinite;
+        }
+        .wave {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            height: 20px;
+            border-top: 4px dashed #4682B4;
+        }
+        #beach {
+            position: absolute;
+            bottom: 100px;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background-color: #F4A460;
+        }
+        #road {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background-color: #696969;
+            animation: roadScroll 5s linear infinite;
+        }
+        .road-line {
+            position: absolute;
+            top: 45px;
+            width: 200%;
+            height: 10px;
+            border-top: 5px dashed yellow;
+        }
+        .palm-tree {
+            position: absolute;
+            bottom: 100px;
+            width: 10px;
+            height: 80px;
+            background-color: #8B4513;
+        }
+        .palm-leaves {
+            position: absolute;
+            bottom: 180px;
+            left: -20px;
+            width: 50px;
+            height: 40px;
+            background-color: #228B22;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        #lighthouse {
+            position: absolute;
+            bottom: 100px;
+            right: 100px;
+            width: 20px;
+            height: 120px;
+            background-color: #FF6347;
+        }
+        #lighthouse-top {
+            position: absolute;
+            bottom: 220px;
+            right: 95px;
+            width: 30px;
+            height: 20px;
+            background-color: #FFD700;
+            border-radius: 5px;
+        }
+        .light {
+            position: absolute;
+            bottom: 220px;
+            right: 70px;
+            width: 80px;
+            height: 5px;
+            background-color: #FFA500;
+            opacity: 0.7;
+            border-radius: 5px;
+            animation: lightBeam 2s linear infinite;
+        }
+        #pelican-container {
+            position: absolute;
+            bottom: 100px;
+            left: 200px;
+            width: 300px;
+            height: 200px;
+            animation: ride 0.5s ease-in-out infinite alternate;
+        }
+        #bicycle {
+            position: absolute;
+            bottom: 0;
+            left: 50px;
+            width: 200px;
+            height: 120px;
+        }
+        .frame {
+            position: absolute;
+            background-color: #FF0000;
+        }
+        .frame-1 {
+            top: 30px;
+            left: 20px;
+            width: 100px;
+            height: 10px;
+        }
+        .frame-2 {
+            top: 40px;
+            left: 120px;
+            width: 10px;
+            height: 50px;
+            transform: rotate(45deg);
+        }
+        .frame-3 {
+            top: 85px;
+            left: 155px;
+            width: 10px;
+            height: 40px;
+        }
+        .wheel {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 5px solid #333;
+            border-radius: 50%;
+            background-color: transparent;
+            animation: wheelSpin 0.5s linear infinite;
+        }
+        .wheel-front {
+            top: 0;
+            left: 150px;
+        }
+        .wheel-rear {
+            top: 60px;
+            left: 20px;
+        }
+        .spoke {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 30px;
+            background-color: #333;
+            transform-origin: center top;
+        }
+        .handlebar {
+            position: absolute;
+            top: 25px;
+            left: 150px;
+            width: 40px;
+            height: 10px;
+            background-color: #333;
+            transform: rotate(20deg);
+        }
+        .seat {
+            position: absolute;
+            top: 30px;
+            left: 70px;
+            width: 20px;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px 5px 0 0;
+        }
+        .pedal {
+            position: absolute;
+            width: 40px;
+            height: 10px;
+            background-color: #333;
+            transform-origin: center;
+        }
+        .pedal-1 {
+            top: 85px;
+            left: 60px;
+            animation: pedalSpin 0.5s linear infinite;
+        }
+        .pedal-2 {
+            top: 85px;
+            left: 60px;
+            animation: pedalSpin 0.5s linear infinite reverse;
+        }
+        #pelican {
+            position: absolute;
+            top: 0;
+            left: 50px;
+            width: 120px;
+            height: 100px;
+        }
+        .pelican-body {
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            width: 60px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .pelican-neck {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            width: 10px;
+            height: 30px;
+            background-color: white;
+        }
+        .pelican-head {
+            position: absolute;
+            top: 0;
+            left: 55px;
+            width: 30px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50% 50% 0 0;
+        }
+        .pelican-beak {
+            position: absolute;
+            top: 5px;
+            left: 80px;
+            width: 40px;
+            height: 15px;
+            background-color: #FFA500;
+            border-radius: 0 20px 20px 0;
+        }
+        .pelican-pouch {
+            position: absolute;
+            top: 15px;
+            left: 85px;
+            width: 30px;
+            height: 10px;
+            background-color: #FFD700;
+            border-radius: 0 10px 10px 0;
+        }
+        .pelican-eye {
+            position: absolute;
+            top: 5px;
+            left: 70px;
+            width: 4px;
+            height: 4px;
+            background-color: black;
+            border-radius: 50%;
+        }
+        .pelican-wing {
+            position: absolute;
+            top: 40px;
+            left: 80px;
+            width: 40px;
+            height: 20px;
+            background-color: white;
+            border-radius: 0 20px 20px 0;
+            border-right: 8px solid black;
+        }
+        .pelican-leg {
+            position: absolute;
+            width: 5px;
+            height: 30px;
+            background-color: #FFA500;
+            bottom: 0;
+        }
+        .pelican-leg-left {
+            left: 60px;
+            animation: legMove 0.25s ease-in-out infinite alternate;
+        }
+        .pelican-leg-right {
+            left: 80px;
+            animation: legMove 0.25s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes roadScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-400px); }
+        }
+        @keyframes waveScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-400px); }
+        }
+        @keyframes wheelSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pedalSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes legMove {
+            0% { transform: translateY(0) rotate(10deg); }
+            100% { transform: translateY(-10px) rotate(-10deg); }
+        }
+        @keyframes ride {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+        @keyframes lightBeam {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div id="scene">
+        <div id="sky">
+            <div id="sun"></div>
+            <div class="cloud"></div>
+            <div class="cloud"></div>
+            <div class="cloud"></div>
+        </div>
+        <div id="sea">
+            <div class="wave"></div>
+        </div>
+        <div id="beach"></div>
+        <div id="road">
+            <div class="road-line"></div>
+        </div>
+        <div class="palm-tree" style="left: 50px;">
+            <div class="palm-leaves"></div>
+        </div>
+        <div class="palm-tree" style="left: 400px;">
+            <div class="palm-leaves"></div>
+        </div>
+        <div id="lighthouse">
+            <div id="lighthouse-top"></div>
+            <div class="light"></div>
+        </div>
+        <div id="pelican-container">
+            <div id="bicycle">
+                <div class="frame frame-1"></div>
+                <div class="frame frame-2"></div>
+                <div class="frame frame-3"></div>
+                <div class="wheel wheel-front">
+                    <div class="spoke" style="transform: rotate(0deg);"></div>
+                    <div class="spoke" style="transform: rotate(60deg);"></div>
+                    <div class="spoke" style="transform: rotate(120deg);"></div>
+                    <div class="spoke" style="transform: rotate(180deg);"></div>
+                    <div class="spoke" style="transform: rotate(240deg);"></div>
+                    <div class="spoke" style="transform: rotate(300deg);"></div>
+                </div>
+                <div class="wheel wheel-rear">
+                    <div class="spoke" style="transform: rotate(0deg);"></div>
+                    <div class="spoke" style="transform: rotate(60deg);"></div>
+                    <div class="spoke" style="transform: rotate(120deg);"></div>
+                    <div class="spoke" style="transform: rotate(180deg);"></div>
+                    <div class="spoke" style="transform: rotate(240deg);"></div>
+                    <div class="spoke" style="transform: rotate(300deg);"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedal pedal-1"></div>
+                <div class="pedal pedal-2"></div>
+            </div>
+            <div id="pelican">
+                <div class="pelican-body"></div>
+                <div class="pelican-neck"></div>
+                <div class="pelican-head"></div>
+                <div class="pelican-beak"></div>
+                <div class="pelican-pouch"></div>
+                <div class="pelican-eye"></div>
+                <div class="pelican-wing"></div>
+                <div class="pelican-leg pelican-leg-left"></div>
+                <div class="pelican-leg pelican-leg-right"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 确保动画在页面加载后立即运行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 所有动画已通过CSS实现，这里只添加一个简单的控制台日志
+            console.log('鹈鹕骑自行车动画已启动！');
+        });
+    </script>
+</body>
+</html>

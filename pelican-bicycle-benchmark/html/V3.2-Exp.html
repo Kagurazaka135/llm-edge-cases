@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>鹈鹕海边骑行</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: linear-gradient(to bottom, #87CEEB 60%, #F0E68C 60%, #F0E68C 65%, #1E90FF 65%); 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+        }
+        .scene {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sky {
+            position: absolute;
+            width: 100%;
+            height: 65%;
+            top: 0;
+        }
+        .sun {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #FFD700;
+            border-radius: 50%;
+            top: 30px;
+            right: 20%;
+            box-shadow: 0 0 40px #FFA500;
+        }
+        .sea {
+            position: absolute;
+            width: 100%;
+            height: 35%;
+            bottom: 0;
+            background: #1E90FF;
+        }
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, transparent 10%, #FFFFFF88 50%, transparent 90%);
+            bottom: 35%;
+            animation: waveMove 3s infinite linear;
+        }
+        .wave:nth-child(2) { bottom: 38%; animation-delay: -1.5s; opacity: 0.7; }
+        @keyframes waveMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .road {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            background: #555;
+            bottom: 0;
+        }
+        .road-line {
+            position: absolute;
+            width: 200%;
+            height: 10px;
+            background: repeating-linear-gradient(90deg, yellow 0, yellow 40px, transparent 40px, transparent 80px);
+            top: 50%;
+            transform: translateY(-50%);
+            animation: roadMove 2s infinite linear;
+        }
+        @keyframes roadMove {
+            0% { transform: translateY(-50%) translateX(0); }
+            100% { transform: translateY(-50%) translateX(-100px); }
+        }
+        .penguin {
+            position: absolute;
+            left: 30%;
+            bottom: 80px;
+            transform: translateX(-50%);
+            animation: bikeMove 4s infinite linear;
+        }
+        .bike {
+            position: relative;
+            width: 200px;
+            height: 100px;
+        }
+        .frame {
+            position: absolute;
+            width: 150px;
+            height: 80px;
+            border: 8px solid #222;
+            border-radius: 20px 10px 60px 10px;
+            top: 10px;
+            left: 20px;
+        }
+        .wheel {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 8px solid #333;
+            border-radius: 50%;
+            bottom: 0;
+            animation: wheelRotate 0.5s infinite linear;
+        }
+        .wheel-front { left: 160px; }
+        .wheel-back { left: 20px; }
+        .wheel-spoke {
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: #333;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .wheel-spoke:nth-child(2) { transform: translateX(-50%) rotate(60deg); }
+        .wheel-spoke:nth-child(3) { transform: translateX(-50%) rotate(120deg); }
+        @keyframes wheelRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .pedal {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 5px solid #444;
+            border-radius: 50%;
+            top: 40px;
+            left: 80px;
+            animation: pedalRotate 0.5s infinite linear;
+        }
+        .pedal-arm {
+            position: absolute;
+            width: 5px;
+            height: 30px;
+            background: #444;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        @keyframes pedalRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .pelican {
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            top: -40px;
+            left: 70px;
+        }
+        .pelican-body {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50% 50% 40% 40%;
+        }
+        .pelican-beak {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: #FF8C00;
+            border-radius: 0 50% 50% 0;
+            top: 15px;
+            left: 55px;
+        }
+        .pelican-wing {
+            position: absolute;
+            width: 40px;
+            height: 25px;
+            background: white;
+            border-radius: 50%;
+            top: 5px;
+            left: 10px;
+            animation: wingFlap 0.3s infinite alternate;
+        }
+        @keyframes wingFlap {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(5px); }
+        }
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: cloudMove 20s infinite linear;
+        }
+        .cloud:nth-child(1) { width: 100px; height: 50px; top: 50px; left: 10%; }
+        .cloud:nth-child(2) { width: 120px; height: 60px; top: 100px; left: 40%; animation-delay: -5s; }
+        .cloud:nth-child(3) { width: 80px; height: 40px; top: 80px; left: 70%; animation-delay: -10s; }
+        @keyframes cloudMove {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100px); }
+        }
+        @keyframes bikeMove {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+        .palm {
+            position: absolute;
+            bottom: 80px;
+            width: 10px;
+            height: 80px;
+            background: #8B4513;
+        }
+        .palm-leaves {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #228B22;
+            border-radius: 50%;
+            bottom: 140px;
+            left: -25px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .palm:nth-child(1) { right: 15%; }
+        .palm:nth-child(2) { right: 25%; }
+        .palm:nth-child(3) { right: 5%; }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="sky">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+            <div class="cloud"></div>
+            <div class="cloud"></div>
+        </div>
+        <div class="sea">
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+        <div class="road">
+            <div class="road-line"></div>
+        </div>
+        <div class="palm"><div class="palm-leaves"></div></div>
+        <div class="palm"><div class="palm-leaves"></div></div>
+        <div class="palm"><div class="palm-leaves"></div></div>
+        <div class="penguin">
+            <div class="bike">
+                <div class="frame"></div>
+                <div class="wheel wheel-front">
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                </div>
+                <div class="wheel wheel-back">
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                    <div class="wheel-spoke"></div>
+                </div>
+                <div class="pedal">
+                    <div class="pedal-arm"></div>
+                </div>
+                <div class="pelican">
+                    <div class="pelican-body"></div>
+                    <div class="pelican-beak"></div>
+                    <div class="pelican-wing"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 确保动画持续运行（备用方案）
+        document.addEventListener('DOMContentLoaded', () => {
+            const penguin = document.querySelector('.penguin');
+            setInterval(() => {
+                penguin.style.animation = 'none';
+                setTimeout(() => penguin.style.animation = 'bikeMove 4s infinite linear', 10);
+            }, 16000);
+        });
+    </script>
+</body>
+</html>

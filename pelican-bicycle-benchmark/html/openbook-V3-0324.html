@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let posX = 100;
+        let wheelRotation = 0;
+        let legAngle = 0;
+        let backgroundX = 0;
+        const speed = 3;
+
+        function drawPelican(x, y) {
+            // Body
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.ellipse(x, y, 30, 25, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Neck
+            ctx.beginPath();
+            ctx.moveTo(x, y - 25);
+            ctx.lineTo(x, y - 60);
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+
+            // Head
+            ctx.beginPath();
+            ctx.arc(x, y - 65, 10, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Beak
+            ctx.fillStyle = 'orange';
+            ctx.beginPath();
+            ctx.moveTo(x, y - 65);
+            ctx.lineTo(x + 40, y - 55);
+            ctx.lineTo(x + 40, y - 75);
+            ctx.closePath();
+            ctx.fill();
+
+            // Throat pouch
+            ctx.fillStyle = 'yellow';
+            ctx.beginPath();
+            ctx.moveTo(x + 20, y - 65);
+            ctx.quadraticCurveTo(x + 30, y - 55, x + 40, y - 65);
+            ctx.fill();
+
+            // Eye
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(x + 5, y - 70, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Wing
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.moveTo(x - 20, y - 10);
+            ctx.quadraticCurveTo(x - 10, y - 40, x + 10, y - 30);
+            ctx.quadraticCurveTo(x + 15, y - 20, x - 20, y - 10);
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.lineTo(x - 20, y - 20);
+            ctx.stroke();
+        }
+
+        function drawBicycle(x, y) {
+            // Frame
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + 30, y + 40);
+            ctx.lineTo(x + 60, y);
+            ctx.lineTo(x + 30, y - 20);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            // Handlebars
+            ctx.beginPath();
+            ctx.moveTo(x + 30, y - 20);
+            ctx.lineTo(x + 50, y - 10);
+            ctx.moveTo(x + 50, y - 20);
+            ctx.lineTo(x + 50, y);
+            ctx.stroke();
+
+            // Seat
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x - 15, y - 5);
+            ctx.stroke();
+
+            // Pedals
+            ctx.strokeStyle = 'orange';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x + 30, y + 40);
+            ctx.lineTo(
+                x + 30 + Math.cos(legAngle) * 20,
+                y + 40 + Math.sin(legAngle) * 20
+            );
+            ctx.moveTo(x + 30, y + 40);
+            ctx.lineTo(
+                x + 30 + Math.cos(legAngle + Math.PI) * 20,
+                y + 40 + Math.sin(legAngle + Math.PI) * 20
+            );
+            ctx.stroke();
+
+            // Wheels
+            drawWheel(x + 15, y + 20, wheelRotation);
+            drawWheel(x + 45, y + 20, wheelRotation);
+        }
+
+        function drawWheel(x, y, rotation) {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Spokes
+            for (let i = 0; i < 8; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(
+                    x + Math.cos(rotation + i * Math.PI / 4) * 25,
+                    y + Math.sin(rotation + i * Math.PI / 4) * 25
+                );
+                ctx.stroke();
+            }
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Sky
+            ctx.fillStyle = 'skyblue';
+            ctx.fillRect(0, 0, canvas.width, canvas.height * 0.7);
+
+            // Sun
+            ctx.fillStyle = 'yellow';
+            ctx.beginPath();
+            ctx.arc(canvas.width - 100, 70, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Clouds
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(200, 80, 20, 0, Math.PI * 2);
+            ctx.arc(230, 80, 25, 0, Math.PI * 2);
+            ctx.arc(260, 80, 20, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Sea
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(0, canvas.height * 0.5, canvas.width, canvas.height * 0.2);
+
+            // Waves
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 10; i++) {
+                ctx.beginPath();
+                ctx.moveTo((i * 100 + backgroundX) % (canvas.width + 100) - 50, canvas.height * 0.55);
+                ctx.quadraticCurveTo(
+                    (i * 100 + backgroundX + 50) % (canvas.width + 100) - 50,
+                    canvas.height * 0.53,
+                    (i * 100 + backgroundX + 100) % (canvas.width + 100) - 50,
+                    canvas.height * 0.55
+                );
+                ctx.stroke();
+            }
+
+            // Beach
+            ctx.fillStyle = 'sandybrown';
+            ctx.fillRect(0, canvas.height * 0.5 - 20, canvas.width, 20);
+
+            // Road
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+
+            // Road lines
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 4;
+            for (let i = 0; i < 20; i++) {
+                ctx.beginPath();
+                ctx.moveTo((i * 60 + backgroundX) % (canvas.width + 60) - 30, canvas.height * 0.8);
+                ctx.lineTo((i * 60 + backgroundX + 30) % (canvas.width + 60) - 30, canvas.height * 0.8);
+                ctx.stroke();
+            }
+
+            // Palm trees
+            for (let i = 0; i < 3; i++) {
+                const treeX = (i * 300 + backgroundX * 0.5) % (canvas.width + 300) - 150;
+                if (treeX > -50 && treeX < canvas.width + 50) {
+                    ctx.strokeStyle = 'brown';
+                    ctx.lineWidth = 10;
+                    ctx.beginPath();
+                    ctx.moveTo(treeX + 20, canvas.height * 0.5 - 20);
+                    ctx.lineTo(treeX + 20, canvas.height * 0.3);
+                    ctx.stroke();
+
+                    ctx.fillStyle = 'green';
+                    for (let j = 0; j < 8; j++) {
+                        const angle = j * Math.PI / 4;
+                        ctx.beginPath();
+                        ctx.moveTo(treeX + 20, canvas.height * 0.3);
+                        ctx.lineTo(
+                            treeX + 20 + Math.cos(angle) * 40,
+                            canvas.height * 0.3 + Math.sin(angle) * 30 - 30
+                        );
+                        ctx.lineTo(
+                            treeX + 20 + Math.cos(angle + 0.2) * 50,
+                            canvas.height * 0.3 + Math.sin(angle + 0.2) * 40 - 30
+                        );
+                        ctx.lineTo(
+                            treeX + 20 + Math.cos(angle - 0.2) * 50,
+                            canvas.height * 0.3 + Math.sin(angle - 0.2) * 40 - 30
+                        );
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Lighthouse
+            const lighthouseX = (800 + backgroundX * 0.3) % (canvas.width + 800) - 400;
+            if (lighthouseX > -100 && lighthouseX < canvas.width + 100) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(lighthouseX, canvas.height * 0.3, 30, 100);
+                ctx.fillStyle = 'red';
+                ctx.fillRect(lighthouseX, canvas.height * 0.3, 30, 15);
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(lighthouseX + 15, canvas.height * 0.3 + 10, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Pelican and bicycle
+            drawPelican(posX, canvas.height * 0.7 - 30);
+            drawBicycle(posX - 20, canvas.height * 0.7 - 10);
+
+            // Animation updates
+            posX += speed;
+            if (posX > canvas.width + 100) posX = -100;
+            wheelRotation += 0.2;
+            legAngle += 0.2;
+            backgroundX += speed;
+
+            requestAnimationFrame(drawScene);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        drawScene();
+    </script>
+</body>
+</html>

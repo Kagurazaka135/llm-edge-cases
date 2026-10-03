@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>鹈鹕骑车动画</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB 60%, #1E90FF 60%, #1E90FF 65%, #F5F5DC 65%);
+            height: 100vh;
+            position: relative;
+        }
+
+        .road {
+            position: absolute;
+            bottom: 20%;
+            width: 100%;
+            height: 80px;
+            background: #555;
+        }
+
+        .road-line {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 4px;
+            background: repeating-linear-gradient(to right, transparent, transparent 40px, yellow 40px, yellow 80px);
+            animation: roadMove 1.5s linear infinite;
+        }
+
+        .palm-tree {
+            position: absolute;
+            bottom: 30%;
+            width: 10px;
+            height: 100px;
+            background: #8B4513;
+        }
+        .palm-tree::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: -25px;
+            width: 60px;
+            height: 40px;
+            background: radial-gradient(circle, #32CD32 60%, transparent 60%);
+            border-radius: 50%;
+        }
+
+        .sun {
+            position: absolute;
+            top: 15%;
+            right: 15%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFD700 60%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #FFA500;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 20px white;
+        }
+
+        .bike {
+            position: absolute;
+            bottom: 28%;
+            left: 20%;
+            animation: bikeMove 8s linear infinite;
+        }
+
+        .frame {
+            position: relative;
+            width: 150px;
+            height: 80px;
+        }
+
+        .wheel {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 8px solid #333;
+            animation: wheelRotate 1s linear infinite;
+        }
+
+        .wheel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: #FFD700;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .wheel.front {
+            left: 0;
+        }
+
+        .wheel.back {
+            left: 90px;
+        }
+
+        .crossbar {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 90px;
+            height: 8px;
+            background: #333;
+            transform: rotate(-15deg);
+        }
+
+        .seat {
+            position: absolute;
+            top: 15px;
+            left: 80px;
+            width: 25px;
+            height: 15px;
+            background: #8B4513;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .handlebar {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            width: 8px;
+            height: 40px;
+            background: #333;
+        }
+
+        .handlebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10px;
+            width: 30px;
+            height: 8px;
+            background: #333;
+        }
+
+        .pedal {
+            position: absolute;
+            top: 50px;
+            left: 45px;
+            width: 40px;
+            height: 40px;
+            animation: pedalRotate 1s linear infinite;
+        }
+
+        .pedal-arm {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 8px;
+            height: 20px;
+            background: #333;
+            transform-origin: bottom center;
+        }
+
+        .pedal-pad {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 20px;
+            height: 8px;
+            background: #444;
+            transform: translateX(-50%);
+        }
+
+        .pelican {
+            position: absolute;
+            top: -80px;
+            left: 70px;
+            width: 80px;
+            height: 60px;
+        }
+
+        .pelican-body {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .pelican-head {
+            position: absolute;
+            top: -15px;
+            left: 45px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .pelican-beak {
+            position: absolute;
+            top: 0;
+            left: 55px;
+            width: 40px;
+            height: 15px;
+            background: #FFA500;
+            border-radius: 50% 0 0 50%;
+        }
+
+        .pelican-beak::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 35px;
+            width: 10px;
+            height: 8px;
+            background: #FF4500;
+            border-radius: 0 50% 50% 0;
+        }
+
+        .pelican-eye {
+            position: absolute;
+            top: -10px;
+            left: 60px;
+            width: 8px;
+            height: 8px;
+            background: black;
+            border-radius: 50%;
+        }
+
+        .wing {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            width: 40px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            animation: wingFlap 0.5s infinite alternate;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 20%;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, transparent, #1E90FF);
+            opacity: 0.7;
+            animation: waveMove 3s linear infinite;
+        }
+
+        /* 动画定义 */
+        @keyframes bikeMove {
+            0% { left: -20%; }
+            100% { left: 120%; }
+        }
+
+        @keyframes wheelRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pedalRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes roadMove {
+            0% { background-position-x: 0; }
+            100% { background-position-x: -80px; }
+        }
+
+        @keyframes wingFlap {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(10deg); }
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="sun"></div>
+    
+    <div class="cloud" style="top: 20%; left: 10%; width: 80px; height: 40px;"></div>
+    <div class="cloud" style="top: 25%; left: 40%; width: 100px; height: 50px;"></div>
+    <div class="cloud" style="top: 15%; left: 70%; width: 70px; height: 35px;"></div>
+    
+    <div class="palm-tree" style="left: 15%;"></div>
+    <div class="palm-tree" style="left: 85%;"></div>
+    
+    <div class="road">
+        <div class="road-line"></div>
+    </div>
+    
+    <div class="wave"></div>
+    
+    <div class="bike">
+        <div class="frame">
+            <div class="wheel front"></div>
+            <div class="wheel back"></div>
+            <div class="crossbar"></div>
+            <div class="seat"></div>
+            <div class="handlebar"></div>
+            <div class="pedal">
+                <div class="pedal-arm"></div>
+                <div class="pedal-pad"></div>
+            </div>
+            <div class="pelican">
+                <div class="pelican-body"></div>
+                <div class="pelican-head"></div>
+                <div class="pelican-beak"></div>
+                <div class="pelican-eye"></div>
+                <div class="wing"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

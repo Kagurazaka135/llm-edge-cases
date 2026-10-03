@@ -1,0 +1,46 @@
+{
+  "id": "gen-1791032763-2tQXWz90fG1Wa8NKXmNf",
+  "object": "chat.completion",
+  "created": 1791032763,
+  "model": "deepseek/deepseek-chat-v3-0324",
+  "provider": "SiliconFlow",
+  "system_fingerprint": null,
+  "service_tier": null,
+  "choices": [
+    {
+      "index": 0,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "message": {
+        "role": "assistant",
+        "content": "```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Pelican Biking Animation</title>\n    <style>\n        body {\n            margin: 0;\n            overflow: hidden;\n            background: linear-gradient(to bottom, #87CEEB 60%, #1E90FF 100%);\n            height: 100vh;\n        }\n        .scene {\n            position: relative;\n            width: 100%;\n            height: 100%;\n        }\n        .road {\n            position: absolute;\n            bottom: 0;\n            width: 300%;\n            height: 100px;\n            background: #555;\n            animation: roadMove 8s linear infinite;\n        }\n        .road-line {\n            position: absolute;\n            top: 50%;\n            left: 0;\n            width: 100%;\n            height: 5px;\n            background: repeating-linear-gradient(to right, white 0%, white 20%, transparent 20%, transparent 40%);\n            transform: translateY(-50%);\n        }\n        .sea {\n            position: absolute;\n            bottom: 100px;\n            width: 300%;\n            height: 100px;\n            background: linear-gradient(to bottom, #1E90FF, #00BFFF);\n            animation: seaMove 16s linear infinite;\n        }\n        .wave {\n            position: absolute;\n            bottom: 100px;\n            width: 100%;\n            height: 20px;\n            background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1440 120\"><path fill=\"rgba(30,144,255,0.7)\" d=\"M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,85.3C672,75,768,85,864,96C960,107,1056,117,1152,117.3C1248,117,1344,107,1392,101.3L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z\"></path></svg>');\n            background-size: cover;\n            animation: waveMove 8s linear infinite;\n        }\n        .sun {\n            position: absolute;\n            top: 50px;\n            right: 100px;\n            width: 60px;\n            height: 60px;\n            background: radial-gradient(circle, #FFD700, #FFA500);\n            border-radius: 50%;\n        }\n        .pelican {\n            position: absolute;\n            bottom: 150px;\n            left: 50px;\n            width: 120px;\n            height: 80px;\n            animation: bikeMove 8s linear infinite;\n        }\n        .pelican-body {\n            position: absolute;\n            width: 80px;\n            height: 50px;\n            background: white;\n            border-radius: 40px 40px 30px 30px;\n        }\n        .pelican-head {\n            position: absolute;\n            top: -20px;\n            left: 55px;\n            width: 30px;\n            height: 30px;\n            background: white;\n            border-radius: 50%;\n        }\n        .pelican-beak {\n            position: absolute;\n            top: -10px;\n            left: 80px;\n            width: 40px;\n            height: 15px;\n            background: #FFA500;\n            border-radius: 10px;\n            transform: rotate(15deg);\n        }\n        .bike {\n            position: absolute;\n            top: 30px;\n            left: 0;\n            width: 100px;\n            height: 50px;\n        }\n        .bike-frame {\n            position: absolute;\n            width: 80px;\n            height: 30px;\n            border: 5px solid #333;\n            border-radius: 5px;\n        }\n        .wheel {\n            position: absolute;\n            width: 30px;\n            height: 30px;\n            border: 3px solid #333;\n            border-radius: 50%;\n            background: transparent;\n            animation: wheelRotate 1s linear infinite;\n        }\n        .wheel-1 {\n            top: 20px;\n            left: 0;\n        }\n        .wheel-2 {\n            top: 20px;\n            left: 70px;\n        }\n        .wheel-spoke {\n            position: absolute;\n            width: 2px;\n            height: 15px;\n            background: #333;\n            top: 7px;\n            left: 14px;\n            transform-origin: center 0px;\n        }\n        .pedal {\n            position: absolute;\n            top: 40px;\n            left: 20px;\n            width: 10px;\n            height: 20px;\n            background: #333;\n            border-radius: 5px;\n            transform-origin: center 10px;\n            animation: pedalRotate 1s linear infinite;\n        }\n        @keyframes bikeMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(calc(100vw + 100px)); }\n        }\n        @keyframes wheelRotate {\n            0% { transform: rotate(0deg); }\n            100% { transform: rotate(360deg); }\n        }\n        @keyframes pedalRotate {\n            0% { transform: rotate(0deg); }\n            100% { transform: rotate(360deg); }\n        }\n        @keyframes roadMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(-66.66%); }\n        }\n        @keyframes seaMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(-33.33%); }\n        }\n        @keyframes waveMove {\n            0% { transform: translateX(0); }\n            100% { transform: translateX(-100%); }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"scene\">\n        <div class=\"sun\"></div>\n        <div class=\"sea\"></div>\n        <div class=\"wave\"></div>\n        <div class=\"road\">\n            <div class=\"road-line\"></div>\n        </div>\n        <div class=\"pelican\">\n            <div class=\"pelican-body\"></div>\n            <div class=\"pelican-head\"></div>\n            <div class=\"pelican-beak\"></div>\n            <div class=\"bike\">\n                <div class=\"bike-frame\"></div>\n                <div class=\"wheel wheel-1\">\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(0deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(60deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(120deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(180deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(240deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(300deg)\"></div>\n                </div>\n                <div class=\"wheel wheel-2\">\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(0deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(60deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(120deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(180deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(240deg)\"></div>\n                    <div class=\"wheel-spoke\" style=\"transform: rotate(300deg)\"></div>\n                </div>\n                <div class=\"pedal\"></div>\n            </div>\n        </div>\n    </div>\n</body>\n</html>\n```",
+        "refusal": null,
+        "reasoning": null
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 128,
+    "completion_tokens": 1804,
+    "total_tokens": 1932,
+    "cost": 0.001836,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.001836,
+      "upstream_inference_prompt_cost": 0.000032,
+      "upstream_inference_completions_cost": 0.001804
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  }
+}
