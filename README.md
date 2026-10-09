@@ -20,6 +20,7 @@ Contents
 - A Chat Bridge Composes the Instruction (ZCode's phone link rewrote a vent into an imperative → autonomous execution; other bridges untested) → [`A-Chat-Bridge-Composes-the-Instruction.md`](A-Chat-Bridge-Composes-the-Instruction.md)
 - Jacobian Conjecture Probe (knowledge-cutoff wall + long-CoT black hole) → [`jacobian-conjecture-probe/`](jacobian-conjecture-probe/)
 - Pelican Bicycle Benchmark (capability ≠ compliance: who actually draws the pelican) → [`pelican-bicycle-benchmark/`](pelican-bicycle-benchmark/)
+- Persona vs. Honesty Fork (same input → two stable output strategies; `temperature=0` doesn't collapse it) → [`persona-vs-honesty-fork/`](persona-vs-honesty-fork/)
 ---
 
 Motivation
